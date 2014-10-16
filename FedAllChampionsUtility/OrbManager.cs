@@ -62,7 +62,7 @@ namespace FedAllChampionsUtility
                 var networkId = packet.ReadInteger();
                 var leByte = packet.ReadByte();
                 var active = (leByte == 0x01);
-
+                
                 if (ActiveRecv)
                 {
                     Activebyte = leByte;
@@ -71,12 +71,12 @@ namespace FedAllChampionsUtility
                 ActiveRecv = active;
 
                 if (ActiveRecv || leByte == Activebyte)
-               {
-                     WObjectNetworkId = networkId;
-                }
-                 else
                 {
-                     WObjectNetworkId = -1;
+                    WObjectNetworkId = networkId;
+                }
+                else
+                {
+                    WObjectNetworkId = -1;
                     Activebyte = 0x00;
                 }  
             }

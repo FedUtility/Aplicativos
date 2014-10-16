@@ -393,11 +393,13 @@ namespace FedAllChampionsUtility
             if (nextSpell == _w)
             {
                 _w.Cast();
+                nextSpell = null;
             }
 
             if (nextSpell == _e)
             {
                 _e.Cast(currentTarget.ServerPosition);
+                nextSpell = null; Console.WriteLine("Move!");
             }
         }
 
@@ -482,7 +484,7 @@ namespace FedAllChampionsUtility
                     {
                         if (currentTarget != null && ProcessPackets && Program.Orbwalker.ActiveMode.ToString() == "Combo")
                         {
-                            Console.WriteLine("Move!");
+                            
                             Packet.C2S.Move.Encoded(new Packet.C2S.Move.Struct(currentTarget.ServerPosition.To2D().X,
                                 currentTarget.ServerPosition.To2D().Y, 3, currentTarget.NetworkId)).Send();
                             Orbwalking.ResetAutoAttackTimer();
@@ -723,8 +725,11 @@ namespace FedAllChampionsUtility
                     else if (SpellName == "RivenMartyr")
                     {
                         // Cancel W animation with Q
-                        if (_q.IsReady() && currentTarget.IsValidTarget(_q.Range))
-                            nextSpell = _q;
+                        if (_q.IsReady(1))
+                        {
+                            nextSpell = null;
+                            Utility.DelayAction.Add(250, delegate { nextSpell = _q; });
+                        }
                         else
                         {
                             nextSpell = null;

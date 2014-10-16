@@ -300,12 +300,12 @@ namespace FedAllChampionsUtility
 
 			if(tempultactive)
 			{
-				Program.Orbwalker.SetAttacks(false);
+				Program.Orbwalker.SetAttack(false);
 				RActive = true;
 			}
 			if(!tempultactive)
 			{
-				Program.Orbwalker.SetAttacks(true);
+				Program.Orbwalker.SetAttack(true);
 				RActive = false;
 			}
 		}

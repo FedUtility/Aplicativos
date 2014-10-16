@@ -32,6 +32,7 @@ namespace FedAllChampionsUtility
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
+            AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
 
             PluginLoaded();
@@ -49,10 +50,10 @@ namespace FedAllChampionsUtility
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
             DFG = Utility.Map.GetMap()._MapType == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
 
-            Q.SetSkillshot(0.6f, 125f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            W.SetSkillshot(0.25f, 140f, 1600f, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.6f, 100f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.25f, 175f, 1475f, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, (float)(45 * 0.5), 2500f, false, SkillshotType.SkillshotCircle);
-            EQ.SetSkillshot(float.MaxValue, 55f, 2000f, false, SkillshotType.SkillshotCircle);
+            EQ.SetSkillshot(float.MaxValue, 55f, 2100f, false, SkillshotType.SkillshotCircle);
 
             // Add to spell list
             spellList.AddRange(new[] { Q, W, E, R });
@@ -93,6 +94,7 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("JungleFarm").AddItem(new MenuItem("JungleFarmActive", "JungleFarm!").SetValue<KeyBind>(new KeyBind('V', KeyBindType.Press)));
 
             Program.Menu.AddSubMenu(new Menu("Misc", "Misc"));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("UseGap", "Use E for GapCloser").SetValue(true));
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("InterruptSpells", "Interrupt spells").SetValue(true));
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("CastQE", "QE closest to cursor").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Program.Menu.SubMenu("Misc").AddSubMenu(new Menu("Dont use R on", "DontUlt"));
@@ -124,17 +126,25 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("Drawings").AddItem(dmgAfterComboItem);
         }
 
-        static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        private void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
             if (Program.Menu.Item("ComboActive").GetValue<KeyBind>().Active)
                 args.Process = !(Q.IsReady() || W.IsReady());
         }
 
-        private static void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
+        private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+            if (!Program.Menu.Item("UseGap").GetValue<bool>()) return;
+
+            if (E.IsReady() && gapcloser.Sender.IsValidTarget(E.Range))
+                E.Cast(gapcloser.Sender);
+        }
+
+        private void Interrupter_OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
             if (!Program.Menu.Item("InterruptSpells").GetValue<bool>()) return;
 
-            if (ObjectManager.Player.Distance(unit) < E.Range && E.IsReady())
+            if (ObjectManager.Player.Distance(unit) < E.Range && E.IsReady() && Q.IsReady())
             {
                 Q.Cast(unit.ServerPosition);
                 E.Cast(unit.ServerPosition);
@@ -145,23 +155,23 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static void Combo()
+        private void Combo()
         {
             UseSpells(Program.Menu.Item("UseQCombo").GetValue<bool>(), Program.Menu.Item("UseWCombo").GetValue<bool>(),
                 Program.Menu.Item("UseECombo").GetValue<bool>(), Program.Menu.Item("UseRCombo").GetValue<bool>(),
                 Program.Menu.Item("UseQECombo").GetValue<bool>(), Program.Menu.Item("UseIgniteCombo").GetValue<bool>(), false);
         }
 
-        private static void Harass()
+        private void Harass()
         {
             UseSpells(Program.Menu.Item("UseQHarass").GetValue<bool>(), Program.Menu.Item("UseWHarass").GetValue<bool>(),
                 Program.Menu.Item("UseEHarass").GetValue<bool>(), false, Program.Menu.Item("UseQEHarass").GetValue<bool>(), false, true);
         }
 
-        private static void UseE(Obj_AI_Base enemy)
+        private void UseE(Obj_AI_Base enemy)
         {
             foreach (var orb in OrbManager.GetOrbs(true))
-                if (ObjectManager.Player.Distance(orb) < E.Range + 100)
+                if (ObjectManager.Player.Distance(orb) < E.Range + 100 && E.IsReady())
                 {
                     var startPoint = orb.To2D().Extend(ObjectManager.Player.ServerPosition.To2D(), 100);
                     var endPoint = ObjectManager.Player.ServerPosition.To2D()
@@ -173,20 +183,20 @@ namespace FedAllChampionsUtility
                         enemyPred.UnitPosition.To2D().Distance(startPoint, endPoint, false) <
                         EQ.Width + enemy.BoundingRadius)
                     {
-                        E.Cast(orb, true);
-                        W.LastCastAttemptT = Environment.TickCount;
+                        E.Cast(orb, Packets());
+                        E.LastCastAttemptT = Environment.TickCount;
                         return;
                     }
                 }
         }
 
-        private static void UseQE(Obj_AI_Base enemy)
+        private void UseQE(Obj_AI_Base enemy)
         {
-            EQ.Delay = E.Delay + Q.Range / E.Speed;
+            EQ.Delay = Q.Range / E.Speed;
             EQ.From = ObjectManager.Player.ServerPosition.To2D().Extend(enemy.ServerPosition.To2D(), Q.Range).To3D();
 
             var prediction = EQ.GetPrediction(enemy);
-            if (prediction.Hitchance >= HitChance.High)
+            if (prediction.Hitchance >= HitChance.High && Q.IsReady())
             {
                 Q.Cast(ObjectManager.Player.ServerPosition.To2D().Extend(prediction.CastPosition.To2D(), Q.Range - 100));
                 QEComboT = Environment.TickCount;
@@ -194,7 +204,7 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static Vector3 GetGrabableObjectPos(bool onlyOrbs)
+        private Vector3 GetGrabableObjectPos(bool onlyOrbs)
         {
             if (!onlyOrbs)
                 foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget(W.Range))
@@ -209,7 +219,7 @@ namespace FedAllChampionsUtility
             var damage = 0d;
 
             if (Q.IsReady(420))
-                damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.Q);
+                damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.Q) - 10;
 
             if (DFG.IsReady())
                 damage += ObjectManager.Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
@@ -220,16 +230,26 @@ namespace FedAllChampionsUtility
             if (E.IsReady())
                 damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.E);
 
-            if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
-                damage += ObjectManager.Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
-
-            if (R.IsReady())                
-                damage += Math.Min(7, ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo) * ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.R, 1);
+            if (R.IsReady())
+                damage += Math.Min(7, ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo) * ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.R, 1) - 20;
 
             return (float)damage * (DFG.IsReady() ? 1.2f : 1);
         }
 
-        private static void UseSpells(bool useQ, bool useW, bool useE, bool useR, bool useQE, bool useIgnite, bool isHarass)
+        public static float getUltDmg(Obj_AI_Base enemy)
+        {
+            var damage = 0d;
+
+            if (DFG.IsReady())
+                damage += ObjectManager.Player.GetItemDamage(enemy, Damage.DamageItems.Dfg) / 1.2;
+
+            if (R.IsReady())
+                damage += Math.Min(7, ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo) * ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.R, 1) - 20;
+
+            return (float)damage * (DFG.IsReady() ? 1.2f : 1);
+        }
+
+        private void UseSpells(bool useQ, bool useW, bool useE, bool useR, bool useQE, bool useIgnite, bool isHarass)
         {
             var qTarget = SimpleTs.GetTarget(Q.Range + (isHarass ? Q.Width / 3 : Q.Width), SimpleTs.DamageType.Magical);
             var wTarget = SimpleTs.GetTarget(W.Range + W.Width, SimpleTs.DamageType.Magical);
@@ -238,8 +258,8 @@ namespace FedAllChampionsUtility
             var comboDamage = rTarget != null ? GetComboDamage(rTarget) : 0;
 
             //Q
-            if (qTarget != null && useQ)
-                Q.Cast(qTarget, false, true);
+            if (qTarget != null && useQ && Q.GetPrediction(qTarget).Hitchance >= HitChance.High && Q.IsReady())
+                Q.Cast(qTarget, Packets(), true);
 
             //E
             if (Environment.TickCount - W.LastCastAttemptT > Game.Ping + 150 && E.IsReady() && useE)
@@ -250,25 +270,24 @@ namespace FedAllChampionsUtility
                 }
 
             //W
-            if (useW)
-                if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1 && W.IsReady() && qeTarget != null)
+            if (useW && W.IsReady())
+                if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1 && qeTarget != null)
                 {
                     //WObject
                     var gObjectPos = GetGrabableObjectPos(wTarget == null);
 
-                    if (gObjectPos.To2D().IsValid() && Environment.TickCount - W.LastCastAttemptT > Game.Ping + 100 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 100)
+                    if (gObjectPos.To2D().IsValid() && Environment.TickCount - W.LastCastAttemptT > Game.Ping + 150 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
                     {
                         W.Cast(gObjectPos);
                         W.LastCastAttemptT = Environment.TickCount;
                     }
                 }
-                else if (wTarget != null && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).ToggleState != 1 && W.IsReady() &&
+                else if (wTarget != null && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).ToggleState != 1 &&
                          Environment.TickCount - W.LastCastAttemptT > Game.Ping + 100)
                 {
-                    if (OrbManager.WObject(false) != null)
+                    if (W.InRange(wTarget.Position) && W.GetPrediction(wTarget).Hitchance >= HitChance.High)
                     {
-                        W.From = OrbManager.WObject(false).ServerPosition;
-                        W.Cast(wTarget, false, true);
+                        W.Cast(wTarget, Packets(), true);
                     }
                 }
 
@@ -277,7 +296,7 @@ namespace FedAllChampionsUtility
                         Program.Menu.Item("DontUlt" + rTarget.BaseSkinName).GetValue<bool>() == false) && useR;
 
             //DFG (and ult if ready)
-            if (rTarget != null && useR && comboDamage > rTarget.Health && DFG.IsReady())
+            if (rTarget != null && useR && getUltDmg(rTarget) > rTarget.Health && DFG.IsReady())
             {
                 DFG.Cast(rTarget);
                 if (R.IsReady())
@@ -289,7 +308,7 @@ namespace FedAllChampionsUtility
             //R
             if (rTarget != null && useR && R.IsReady() && !Q.IsReady() && !DFG.IsReady())
             {
-                if (comboDamage > rTarget.Health)
+                if (getUltDmg(rTarget) > rTarget.Health)
                 {
                     R.Cast(rTarget);
                 }
@@ -310,7 +329,7 @@ namespace FedAllChampionsUtility
                 UseQE(qeTarget);
 
             //WE
-            if (wTarget == null && qeTarget != null && E.IsReady() && useE && OrbManager.WObject(true) != null)
+            if (wTarget == null && qeTarget != null && E.IsReady() && useE && OrbManager.WObject(true) != null && W.IsReady())
             {
                 EQ.Delay = E.Delay + Q.Range / W.Speed;
                 EQ.From = ObjectManager.Player.ServerPosition.To2D().Extend(qeTarget.ServerPosition.To2D(), Q.Range).To3D();
@@ -323,24 +342,24 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        private void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe && Environment.TickCount - QEComboT < 500 &&
+            if (sender.IsMe && Environment.TickCount - QEComboT < 500 && E.IsReady() &&
                 (args.SData.Name == "SyndraQ"))
             {
                 W.LastCastAttemptT = Environment.TickCount + 400;
-                E.Cast(args.End, true);
+                E.Cast(args.End, Packets());
             }
 
             if (sender.IsMe && Environment.TickCount - WEComboT < 500 &&
-                (args.SData.Name == "SyndraW" || args.SData.Name == "syndrawcast"))
+                (args.SData.Name == "SyndraW" || args.SData.Name == "syndrawcast") && E.IsReady())
             {
                 W.LastCastAttemptT = Environment.TickCount + 400;
-                E.Cast(args.End, true);
+                E.Cast(args.End, Packets());
             }
         }
 
-        private static void Farm(bool laneClear)
+        private void Farm(bool laneClear)
         {
             if (!Orbwalking.CanMove(40)) return;
 
@@ -415,7 +434,7 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static void JungleFarm()
+        private void JungleFarm()
         {
             var useQ = Program.Menu.Item("UseQJFarm").GetValue<bool>();
             var useW = Program.Menu.Item("UseWJFarm").GetValue<bool>();
@@ -446,7 +465,7 @@ namespace FedAllChampionsUtility
         }
 
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private void Game_OnGameUpdate(EventArgs args)
         {
             if (ObjectManager.Player.IsDead) return;
 
@@ -477,7 +496,7 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnDraw(EventArgs args)
         {
             //Draw the ranges of the spells.
             var menuItem = Program.Menu.Item("QERange").GetValue<Circle>();

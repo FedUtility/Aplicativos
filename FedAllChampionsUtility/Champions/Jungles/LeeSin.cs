@@ -107,7 +107,7 @@ namespace FedAllChampionsUtility
             CastR_kill();
             target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
             checkLock(target);
-            Program.Orbwalker.SetAttacks(true);            
+            Program.Orbwalker.SetAttack(true);            
 
             if (Program.Menu.Item("ActiveWard").GetValue<KeyBind>().Active)
             {

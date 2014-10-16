@@ -89,23 +89,23 @@ namespace FedAllChampionsUtility
 			switch(Program.Orbwalker.ActiveMode)
 			{
 				case Orbwalking.OrbwalkingMode.Combo:
-					Program.Orbwalker.SetAttacks(_menu.Item("comboAA").GetValue<bool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
+					Program.Orbwalker.SetAttack(_menu.Item("comboAA").GetValue<bool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
 					Combo();
 					break;
 				case Orbwalking.OrbwalkingMode.Mixed:
-					Program.Orbwalker.SetAttacks(true);
+					Program.Orbwalker.SetAttack(true);
 					Harass();
 					break;
 				case Orbwalking.OrbwalkingMode.LaneClear:
-					Program.Orbwalker.SetAttacks(_menu.Item("farmAA").GetValue<bool>() || ObjectManager.Player.Mana < 100);
+					Program.Orbwalker.SetAttack(_menu.Item("farmAA").GetValue<bool>() || ObjectManager.Player.Mana < 100);
 					LaneClear();
 					break;
 				case Orbwalking.OrbwalkingMode.LastHit:
-					Program.Orbwalker.SetAttacks(true);
+					Program.Orbwalker.SetAttack(true);
 					LastHit();
 					break;
 				default:
-                    Program.Orbwalker.SetAttacks(true);
+                    Program.Orbwalker.SetAttack(true);
 					RegulateEState();
 
                     if (_menu.Item("autoCast").GetValue<bool>())

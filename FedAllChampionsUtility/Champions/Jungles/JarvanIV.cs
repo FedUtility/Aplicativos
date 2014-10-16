@@ -88,7 +88,7 @@ namespace FedAllChampionsUtility
 
         static void Game_OnGameUpdate(EventArgs args)
         {
-            Program.Orbwalker.SetAttacks(true);
+            Program.Orbwalker.SetAttack(true);
             
             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
 
