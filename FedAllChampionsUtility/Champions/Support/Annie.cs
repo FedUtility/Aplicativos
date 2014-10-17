@@ -6,6 +6,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -30,7 +31,7 @@ namespace FedAllChampionsUtility
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnGameUpdate += OnGameUpdate;
             GameObject.OnCreate += OnCreateObject;
-            Orbwalking.BeforeAttack += OrbwalkingBeforeAttack;
+            LXOrbwalker.BeforeAttack += OrbwalkingBeforeAttack;
 
             PluginLoaded();
         }
@@ -135,24 +136,24 @@ namespace FedAllChampionsUtility
             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
             var flashRtarget = SimpleTs.GetTarget(900, SimpleTs.DamageType.Magical);
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     Combo(target, flashRtarget);
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     Harass(target);
                     break;
-                case Orbwalking.OrbwalkingMode.LastHit:
+                case LXOrbwalker.Mode.Lasthit:
                     Farm(false);
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     Farm(true);
                     break;
             }
         }
 
-        private void OrbwalkingBeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        private void OrbwalkingBeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
             args.Process = Environment.TickCount - DoingCombo > 500;
         }

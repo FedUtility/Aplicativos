@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 
@@ -73,7 +74,7 @@ namespace FedAllChampionsUtility
             LoadMenu();
 			LoadSpells();
 
-            Orbwalking.BeforeAttack += BeforeAttack;
+            LXOrbwalker.BeforeAttack += BeforeAttack;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             Obj_AI_Base.OnPlayAnimation += OnAnimation;
             Game.OnGameUpdate += OnGameUpdate;
@@ -280,7 +281,7 @@ namespace FedAllChampionsUtility
             if (Program.Menu.SubMenu("Misc").Item("Flee").GetValue<KeyBind>().Active)
                 Flee();
 
-            if (Program.Orbwalker.ActiveMode.ToString() == "Combo")
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
             {
                 // try not to switch targets unless needed
                 if (currentTarget == null)
@@ -289,10 +290,10 @@ namespace FedAllChampionsUtility
                 if (currentTarget != null &&
                     (currentTarget.IsDead || !currentTarget.IsVisible ||
                      !currentTarget.IsValidTarget(_e.Range + _q.Range + Player.AttackRange)))
-                    Program.Orbwalker.SetMovement(true);
+                    LXOrbwalker.SetMovement(true);
 
                 if (currentTarget == null)
-                    Program.Orbwalker.SetMovement(true);
+                    LXOrbwalker.SetMovement(true);
 
 
                 if (!currentTarget.IsVisible)
@@ -304,6 +305,11 @@ namespace FedAllChampionsUtility
                 if (!currentTarget.IsValidTarget(_e.Range + _q.Range + Player.AttackRange))
                     AcquireTarget();
 
+                if (SimpleTs.GetSelectedTarget() != null && SimpleTs.GetSelectedTarget() != currentTarget && SimpleTs.GetSelectedTarget().IsVisible && SimpleTs.GetSelectedTarget().IsValidTarget())
+                {
+                    currentTarget = SimpleTs.GetSelectedTarget();
+                }
+
                 if (!currentTarget.IsDead && currentTarget.IsVisible)
                 {
                     GapClose(currentTarget);
@@ -312,7 +318,7 @@ namespace FedAllChampionsUtility
             }
             else
             {
-                Program.Orbwalker.SetMovement(true);
+                LXOrbwalker.SetMovement(true);
                 if (!IsRecalling && qCount != 0 && lastQCast + (3650 - Game.Ping / 2) < Environment.TickCount &&
                     Program.Menu.SubMenu("Misc").Item("QKeepAlive").GetValue<bool>())
                 {
@@ -323,7 +329,7 @@ namespace FedAllChampionsUtility
 
         private static void Flee()
         {
-            Program.Orbwalker.SetMovement(true);
+            LXOrbwalker.SetMovement(true);
             if (_q.IsReady())
                 _q.Cast(Game.CursorPos, true);
             if (_e.IsReady())
@@ -348,11 +354,11 @@ namespace FedAllChampionsUtility
             currentTarget = SimpleTs.GetTarget(_e.Range + _q.Range + Player.AttackRange, SimpleTs.DamageType.Physical);
         }
 
-        public static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        public static void BeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
             // orbwalker cancels autos sometimes, fucks up DPS bad
             if (!args.Target.IsMinion)
-                Program.Orbwalker.SetMovement(false);
+                LXOrbwalker.SetMovement(false);
         }
 
         public static void Combo(Obj_AI_Base target)
@@ -431,7 +437,7 @@ namespace FedAllChampionsUtility
 
                     var target = ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(targetId);
 
-                    if (Program.Orbwalker.ActiveMode.ToString() == "Combo")
+                    if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                     {
                         //4.18 - 4 = basic attack/all spells, 3 = crit attack
                         if ((damageType == 3 || damageType == 4) && lastSpellName.Contains("Attack"))
@@ -453,7 +459,7 @@ namespace FedAllChampionsUtility
                                 nextSpell = _q;
                             }
                             UseAttack = false;
-                            Program.Orbwalker.SetMovement(true);
+                            LXOrbwalker.SetMovement(true);
                         }
                     }
                 }
@@ -471,7 +477,7 @@ namespace FedAllChampionsUtility
 
                             if (!Program.Menu.SubMenu("Misc").Item("DCFix").GetValue<bool>())
                                 CancelAnimation();
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                         }
                     }
                 }
@@ -482,17 +488,17 @@ namespace FedAllChampionsUtility
                     int sourceId = packet.ReadInteger();
                     if (sourceId == Player.NetworkId)
                     {
-                        if (currentTarget != null && ProcessPackets && Program.Orbwalker.ActiveMode.ToString() == "Combo")
+                        if (currentTarget != null && ProcessPackets && LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                         {
                             
                             Packet.C2S.Move.Encoded(new Packet.C2S.Move.Struct(currentTarget.ServerPosition.To2D().X,
                                 currentTarget.ServerPosition.To2D().Y, 3, currentTarget.NetworkId)).Send();
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                             ProcessPackets = false;
                         }
                         if (ProcessPackets)
                         {
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                             ProcessPackets = false;
                         }
                     }
@@ -507,7 +513,7 @@ namespace FedAllChampionsUtility
                         if (ProcessPackets)
                         {
                             CancelAnimation(); // wait until recv packet 0x61
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                         }
                     }
                 }
@@ -536,7 +542,7 @@ namespace FedAllChampionsUtility
 
         public static void OnAnimation(GameObject unit, GameObjectPlayAnimationEventArgs args)
         {
-            if (unit.IsMe && Program.Orbwalker.ActiveMode.ToString() == "Combo") // Spell1 = Q
+            if (unit.IsMe && LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo) // Spell1 = Q
             {
                 if (args.Animation.Contains("Spell1"))
                 {
@@ -683,7 +689,7 @@ namespace FedAllChampionsUtility
                     lastQCast = Environment.TickCount;
                 }
 
-                if (Program.Orbwalker.ActiveMode.ToString() == "Combo")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                 {
                     lastSpell = null;
                     if (SpellName.Contains("Attack"))
@@ -725,10 +731,10 @@ namespace FedAllChampionsUtility
                     else if (SpellName == "RivenMartyr")
                     {
                         // Cancel W animation with Q
-                        if (_q.IsReady(1))
+                        if (_q.IsReady())
                         {
                             nextSpell = null;
-                            Utility.DelayAction.Add(250, delegate { nextSpell = _q; });
+                            Utility.DelayAction.Add(175, delegate { nextSpell = _q; });
                         }
                         else
                         {
@@ -852,7 +858,7 @@ namespace FedAllChampionsUtility
                              Program.Menu.SubMenu("KS").Item("KillStealR").GetValue<bool>() &&
                              Program.Menu.SubMenu("KS").Item("KillStealRActivate").GetValue<bool>() &&
                              hero.IsValidTarget(_r.Range - 30) && GetRDamage(hero) - 20 >= hero.Health &&
-                             Program.Orbwalker.ActiveMode.ToString() != "Combo")
+                             LXOrbwalker.CurrentMode.ToString() != "Combo")
                     {
                         IsKSing = true;
                         _r.Cast();

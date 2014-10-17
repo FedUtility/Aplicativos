@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -88,9 +89,9 @@ namespace FedAllChampionsUtility
 			BuffCheck();
 			UltCheck();
 
-			switch (Program.Orbwalker.ActiveMode)
+			switch (LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if (Program.Menu.Item("useE_TeamFight").GetValue<bool>())
 						CastE();
 					if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
@@ -100,13 +101,13 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_TeamFight").GetValue<bool>() || Program.Menu.Item("useR_TeamFight_2").GetValue<bool>())
 						CastREnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>() && ManaManagerAllowCast(Q))
 						CastQEnemy();
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>() && ManaManagerAllowCast(W))
 						CastWEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useE_LaneClear").GetValue<bool>() && ManaManagerAllowCast(E))
 						CastE();
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>() && ManaManagerAllowCast(Q))
@@ -120,7 +121,7 @@ namespace FedAllChampionsUtility
 						CastWMinion();
 					}
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
+				case LXOrbwalker.Mode.Lasthit:
 					if(Program.Menu.Item("useQ_LastHit").GetValue<bool>() && ManaManagerAllowCast(Q))
 						CastQMinion();
 					break;
@@ -180,8 +181,8 @@ namespace FedAllChampionsUtility
 		{
 			if(!Q.IsReady() || !CanUseSpells)
 				return;
-			var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-			var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+			var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+			var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 			var allMinions = MinionManager.GetMinions(ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 			if(lastHit)
 			{
@@ -258,10 +259,10 @@ namespace FedAllChampionsUtility
 		{
 			if(!E.IsReady() || !CanUseSpells)
 				return;
-			var combo = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo;
+			var combo = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo;
 			var comboRange = Program.Menu.Item("useE_TeamFight_Range").GetValue<Slider>().Value;
 
-			var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+			var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 			var laneClearRange = Program.Menu.Item("useE_LaneClear_Range").GetValue<Slider>().Value;
 
 
@@ -300,12 +301,12 @@ namespace FedAllChampionsUtility
 
 			if(tempultactive)
 			{
-				Program.Orbwalker.SetAttack(false);
+				LXOrbwalker.SetAttack(false);
 				RActive = true;
 			}
 			if(!tempultactive)
 			{
-				Program.Orbwalker.SetAttack(true);
+				LXOrbwalker.SetAttack(true);
 				RActive = false;
 			}
 		}

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -243,11 +244,11 @@ namespace FedAllChampionsUtility
             switch (useQi)
             {
                 case 0:
-                    if (qTarget.Distance(ObjectManager.Player) >= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+                    if (qTarget.Distance(ObjectManager.Player) >= LXOrbwalker.GetAutoAttackRange(ObjectManager.Player))
                         Q.CastOnUnit(qTarget);
                     break;
                 case 1:
-                    if (qTarget.Distance(ObjectManager.Player) <= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+                    if (qTarget.Distance(ObjectManager.Player) <= LXOrbwalker.GetAutoAttackRange(ObjectManager.Player))
                         Q.CastOnUnit(qTarget);
                     break;
                 case 2:

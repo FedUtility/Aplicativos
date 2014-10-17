@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -28,7 +29,7 @@ namespace FedAllChampionsUtility
 
             Drawing.OnDraw += Drawing_OnDraw;            
             Game.OnGameUpdate += Game_OnGameUpdate;
-            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            LXOrbwalker.AfterAttack += Orbwalking_AfterAttack;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
 
             PluginLoaded();
@@ -89,7 +90,7 @@ namespace FedAllChampionsUtility
             var normalTarget = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
             var qeTarget = SimpleTs.GetTarget(200 + E.Range, SimpleTs.DamageType.Physical);            
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo || Program.Menu.Item("UseET").GetValue<KeyBind>().Active)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo || Program.Menu.Item("UseET").GetValue<KeyBind>().Active)
             {               
 
                 if (normalTarget.IsValid)
@@ -110,7 +111,7 @@ namespace FedAllChampionsUtility
                 }
             }
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && Program.Menu.Item("AutoR").GetValue<bool>())
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo && Program.Menu.Item("AutoR").GetValue<bool>())
             {
                 AutoUlt();
             }
@@ -120,7 +121,7 @@ namespace FedAllChampionsUtility
                 QDefense();
             }
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo || (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && Program.Menu.Item("ItInMix").GetValue<bool>()))
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo || (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass && Program.Menu.Item("ItInMix").GetValue<bool>()))
             {
                 useItems(normalTarget);
             }
@@ -168,7 +169,7 @@ namespace FedAllChampionsUtility
             if (Program.Menu.Item("Draw_Disabled").GetValue<bool>())
                 return;
             
-            var myRange = Orbwalking.GetRealAutoAttackRange(null);
+            var myRange = LXOrbwalker.GetAutoAttackRange(null);
             
             if (Program.Menu.Item("Draw_Q").GetValue<bool>())
                 if (Q.Level > 0)
@@ -181,8 +182,8 @@ namespace FedAllChampionsUtility
         }        
         public void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
         {
-            if (unit.IsMe && (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && Program.Menu.Item("UseQC").GetValue<bool>() ||
-                              Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && Program.Menu.Item("UseQH").GetValue<bool>()))
+            if (unit.IsMe && (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo && Program.Menu.Item("UseQC").GetValue<bool>() ||
+                              LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass && Program.Menu.Item("UseQH").GetValue<bool>()))
             {
                 CastTumble((Obj_AI_Hero)target);
             }

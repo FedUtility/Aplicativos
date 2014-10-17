@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -109,9 +110,9 @@ namespace FedAllChampionsUtility
 
 		private void Game_OnGameUpdate(EventArgs args)
 		{
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 					{
 						Cast_BasicLineSkillshot_Enemy(Q, SimpleTs.DamageType.Magical);
@@ -125,7 +126,7 @@ namespace FedAllChampionsUtility
 					if (Program.Menu.Item("useR_TeamFight").GetValue<bool>())
 						Cast_R();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 					{
 						Cast_BasicLineSkillshot_Enemy(Q, SimpleTs.DamageType.Magical);
@@ -136,7 +137,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useE_Harass_pix").GetValue<bool>() && EnoughManaFor(SpellSlot.Q,SpellSlot.E) && Q.IsReady())
 						Cast_onMinion_nearEnemy(E, Q.Range,SimpleTs.DamageType.Magical );
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
 						Cast_BasicLineSkillshot_AOE_Farm(Q);
 

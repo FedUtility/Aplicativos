@@ -7,6 +7,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 
 #endregion
 
@@ -84,11 +85,11 @@ namespace FedAllChampionsUtility
         private void Game_OnGameUpdate(EventArgs args)
         {
             // Combo
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                 Combo();
 
             // Harass
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
                 Harass();
         }
         private void Combo()

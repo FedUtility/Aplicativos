@@ -5,6 +5,7 @@ using LeagueSharp.Common;
 using Color = System.Drawing.Color;
 using Menu = LeagueSharp.Common.Menu;
 using MenuItem = LeagueSharp.Common.MenuItem;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -138,9 +139,9 @@ namespace FedAllChampionsUtility
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            Cooldowns();           
+            Cooldowns();
 
-            Program.Orbwalker.SetAttack(true);
+            LXOrbwalker.SetAttack(true);
 
             CheckSpells();
 
@@ -306,7 +307,7 @@ namespace FedAllChampionsUtility
                         }
                         if (spiderjungleW && _spiderW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= 150)
                         {
-                            Program.Orbwalker.SetAttack(true);
+                            LXOrbwalker.SetAttack(true);
                             _spiderW.Cast();
                         }
                         if (_r.IsReady() && _humanQ.IsReady() && !_spiderQ.IsReady() && !_spiderW.IsReady() && _spider)

@@ -3,6 +3,7 @@ using System.Reflection;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -100,9 +101,9 @@ namespace FedAllChampionsUtility
 		{
 			Cast_R_off();
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						Cast_onEnemy(Q,SimpleTs.DamageType.Magical );
 					if (Program.Menu.Item("useW_TeamFight").GetValue<bool>())
@@ -112,7 +113,7 @@ namespace FedAllChampionsUtility
 					if (Program.Menu.Item("useR_TeamFight").GetValue<bool>())
 						Cast_R_on();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						Cast_onEnemy(Q,SimpleTs.DamageType.Magical );
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>())
@@ -122,7 +123,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_Harass").GetValue<bool>())
 						Cast_R_on();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
 						Cast_Basic_Farm(Q);
 					if(Program.Menu.Item("useW_LaneClear").GetValue<bool>())
@@ -167,7 +168,7 @@ namespace FedAllChampionsUtility
 				R.Cast();
 				return;
 			}
-			if (Program.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear) 
+			if (LXOrbwalker.CurrentMode != LXOrbwalker.Mode.LaneClear) 
 				return;
 			if(MinionManager.GetMinions(ObjectManager.Player.Position, R.Range, MinionTypes.All, MinionTeam.NotAlly).Count >= 1 && ManaManagerAllowCast(R))
 				R.Cast();

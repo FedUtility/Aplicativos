@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -21,7 +22,7 @@ namespace FedAllChampionsUtility
 
 			Drawing.OnDraw += Drawing_OnDraw;
 			Game.OnGameUpdate += Game_OnGameUpdate;
-			Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            LXOrbwalker.AfterAttack += Orbwalking_AfterAttack;
 			PluginLoaded();
 		}
 
@@ -86,21 +87,21 @@ namespace FedAllChampionsUtility
 
 		private void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
 		{
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						CastQEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						CastQEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
 						CastQMinion();
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
+				case LXOrbwalker.Mode.Lasthit:
 					if(Program.Menu.Item("useQ_LastHit").GetValue<bool>())
 						CastQMinion();
 					break;
@@ -111,19 +112,19 @@ namespace FedAllChampionsUtility
 		{
 			EvolutionCheck();
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useW_TeamFight").GetValue<bool>())
 						CastWEnemy();
 					if(Program.Menu.Item("useE_TeamFight").GetValue<bool>())
 						CastEEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>())
 						CastWEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useW_LaneClear").GetValue<bool>())
 						CastWMinion();
 					if(Program.Menu.Item("useE_LaneClear").GetValue<bool>())
@@ -173,12 +174,12 @@ namespace FedAllChampionsUtility
 			{
 				if(!minion.IsValidTarget())
 					continue;
-				var minionInRangeAa = Orbwalking.InAutoAttackRange(minion);
+                var minionInRangeAa = LXOrbwalker.InAutoAttackRange(minion);
 				var minionInRangeSpell = minion.Distance(ObjectManager.Player) <= Q.Range;
 				var minionKillableAa = ObjectManager.Player.GetAutoAttackDamage(minion) >= minion.Health;
 				var minionKillableSpell = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health;
-				var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-				var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+                var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+				var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 
 				if((lastHit && minionInRangeSpell && minionKillableSpell) && ((minionInRangeAa && !minionKillableAa) || !minionInRangeAa))
 					Q.CastOnUnit(minion, Packets());

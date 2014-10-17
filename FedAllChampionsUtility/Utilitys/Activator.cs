@@ -4,6 +4,7 @@ using LeagueSharp.Common;
 using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -468,9 +469,9 @@ namespace FedAllChampionsUtility
                             var muramanaNeeded = false;
                             if (ObjectManager.Player.Buffs.Any(buff => ObjectManager.Player.HasBuff(item.Name)))
                                 muramanaActive = true;
-                            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo &&
+                            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useCombo").GetValue<bool>() ||
-                                Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed &&
+                                LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useHarass").GetValue<bool>())
                                 if (Utility.CountEnemysInRange((int)ObjectManager.Player.AttackRange + 100) >= 1)
                                     muramanaNeeded = true;
@@ -480,12 +481,12 @@ namespace FedAllChampionsUtility
                         // Youmuu's Ghostblade
                         if (item.Id == 3142)
                         {
-                            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo &&
+                            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useCombo").GetValue<bool>() ||
-                                Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed &&
+                                LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useHarass").GetValue<bool>())
                             {
-                                int attackrange = (int)Orbwalking.GetRealAutoAttackRange(ObjectManager.Player);
+                                int attackrange = (int)LXOrbwalker.GetAutoAttackRange(ObjectManager.Player);
                                 if (Utility.CountEnemysInRange(attackrange) >= 1)
                                     item.CastItem();
                             }
@@ -514,9 +515,9 @@ namespace FedAllChampionsUtility
                                     break;
                             }
 
-                            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo &&
+                            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useCombo").GetValue<bool>() ||
-                                Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed &&
+                                LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass &&
                                 Program.Menu.Item("act_item_" + item.Id + "_useHarass").GetValue<bool>())
                             {
                                 if (SimpleTs.GetTarget(range, SimpleTs.DamageType.True) != null)

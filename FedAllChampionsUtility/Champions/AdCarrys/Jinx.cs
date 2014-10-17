@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -24,7 +25,7 @@ namespace FedAllChampionsUtility
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnGameUpdate += Game_OnGameUpdate;
-            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            LXOrbwalker.AfterAttack += Orbwalking_AfterAttack;
 
             PluginLoaded();
             

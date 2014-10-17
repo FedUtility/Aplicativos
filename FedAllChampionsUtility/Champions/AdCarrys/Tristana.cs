@@ -4,6 +4,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -29,7 +30,7 @@ namespace FedAllChampionsUtility
 
         private void LoadSpells()
         {
-            Q = new Spell(SpellSlot.Q, Orbwalking.GetRealAutoAttackRange(ObjectManager.Player));
+            Q = new Spell(SpellSlot.Q, LXOrbwalker.GetAutoAttackRange(ObjectManager.Player));
 
             W = new Spell(SpellSlot.W, 900);
             W.SetSkillshot(0.5f, 150, float.MaxValue, false, SkillshotType.SkillshotCircle);
@@ -41,7 +42,7 @@ namespace FedAllChampionsUtility
 
         private void LoadMenu()
         {
-            //TS = new UcTargetSelector(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), UcTargetSelector.Mode.AutoPriority);
+            //TS = new UcTargetSelector(LXOrbwalker.GetAutoAttackRange(ObjectManager.Player), UcTargetSelector.Mode.AutoPriority);
 
             //Program.Menu.AddSubMenu(new Menu("UC-TargetSelector", "UCTS"));
             //UcTargetSelector.AddtoMenu(Program.Menu.SubMenu("UCTS"));
@@ -84,21 +85,21 @@ namespace FedAllChampionsUtility
                 return;
 
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
                         CastQ();
                     if (Program.Menu.Item("useE_TeamFight").GetValue<bool>())
                         CastE();
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if (Program.Menu.Item("useQ_Harass").GetValue<bool>())
                         CastQ();
                     if (Program.Menu.Item("useE_Harass").GetValue<bool>())
                         CastE();
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     if (Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
                         CastQ_farm();
                     if (Program.Menu.Item("useW_LaneClear").GetValue<bool>())
@@ -127,9 +128,9 @@ namespace FedAllChampionsUtility
 
                 if (Q.IsReady())
                 {
-                    if (health <= aDamage * 3 + igniteDamage && targetdis < Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+                    if (health <= aDamage * 3 + igniteDamage && targetdis < LXOrbwalker.GetAutoAttackRange(ObjectManager.Player))
                     {
-                        Program.Orbwalker.ForceTarget(enemy);
+                        LXOrbwalker.ForcedTarget = enemy;
                         Q.Cast();
                         return true;
                     }
@@ -159,26 +160,26 @@ namespace FedAllChampionsUtility
                     }
                     if (health <= aDamage + eDamage + rDamage + wDamage + igniteDamage && targetdis < W.Range)
                     {
-                        Program.Orbwalker.ForceTarget(enemy);
+                        LXOrbwalker.ForcedTarget = enemy;
                         W.CastIfHitchanceEquals(enemy, HitChance.High, Packets());
                         return true;
                     }
 
-                    if (health <= aDamage + igniteDamage && targetdis < W.Range + Orbwalking.GetRealAutoAttackRange(ObjectManager.Player) - 200 && Q.IsReady())
+                    if (health <= aDamage + igniteDamage && targetdis < W.Range + LXOrbwalker.GetAutoAttackRange(ObjectManager.Player) - 200 && Q.IsReady())
                     {
-                        Program.Orbwalker.ForceTarget(enemy);
+                        LXOrbwalker.ForcedTarget = enemy;
                         W.Cast(GetJumpposition(enemy), Packets());
                         return true;
                     }
                     if (health <= eDamage + aDamage + igniteDamage && targetdis < W.Range + E.Range - 200 && Q.IsReady() && E.IsReady())
                     {
-                        Program.Orbwalker.ForceTarget(enemy);
+                        LXOrbwalker.ForcedTarget = enemy;
                         W.Cast(GetJumpposition(enemy), Packets());
                         return true;
                     }
                     if (health <= rDamage + aDamage + igniteDamage && targetdis < W.Range + R.Range - 200 && Q.IsReady() && R.IsReady())
                     {
-                        Program.Orbwalker.ForceTarget(enemy);
+                        LXOrbwalker.ForcedTarget = enemy;
                         W.Cast(GetJumpposition(enemy), Packets());
                         return true;
                     }
@@ -220,8 +221,8 @@ namespace FedAllChampionsUtility
         {
             if (!Q.IsReady())
                 return;
-            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), MinionTypes.All, MinionTeam.NotAlly);
-            if (allMinions.Where(minion => minion != null).Any(minion => minion.IsValidTarget(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)) && Q.IsReady()))
+            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, LXOrbwalker.GetAutoAttackRange(ObjectManager.Player), MinionTypes.All, MinionTeam.NotAlly);
+            if (allMinions.Where(minion => minion != null).Any(minion => minion.IsValidTarget(LXOrbwalker.GetAutoAttackRange(ObjectManager.Player)) && Q.IsReady()))
                 Q.Cast();
         }
 
@@ -263,7 +264,7 @@ namespace FedAllChampionsUtility
                 return;
             SpellRangeTick = Environment.TickCount;
 
-            Q.Range = Orbwalking.GetRealAutoAttackRange(ObjectManager.Player);
+            Q.Range = LXOrbwalker.GetAutoAttackRange(ObjectManager.Player);
             E.Range = 550 + (9 * (ObjectManager.Player.Level - 1));
             R.Range = 550 + (9 * (ObjectManager.Player.Level - 1));
         }

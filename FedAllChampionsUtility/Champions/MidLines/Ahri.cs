@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -73,15 +74,15 @@ namespace FedAllChampionsUtility
 
         void Game_OnGameUpdate(EventArgs args)
         {            
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     Combo();
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     Harass();
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     LaneClear();
                     break;
                 default:

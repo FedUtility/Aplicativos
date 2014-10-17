@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -125,9 +126,9 @@ namespace FedAllChampionsUtility
         }
 
         private void Game_OnGameUpdate(EventArgs args)
-        {           
+        {
 
-            Program.Orbwalker.SetAttack(true);
+            LXOrbwalker.SetAttack(true);
 
             if (Program.Menu.Item("ActiveCombo").GetValue<KeyBind>().Active)
             {
@@ -280,7 +281,7 @@ namespace FedAllChampionsUtility
                 }
                 else
                     foreach (var minion in allMinionsQ)
-                        if (!Orbwalking.InAutoAttackRange(minion) &&
+                        if (!LXOrbwalker.InAutoAttackRange(minion) &&
                         minion.Health < 0.75 * ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q))
                             _q.Cast(minion);
             }

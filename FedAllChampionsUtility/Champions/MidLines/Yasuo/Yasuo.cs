@@ -9,6 +9,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using System.Drawing;
 using SharpDX;
+using LX_Orbwalker;
 using Geometry = LeagueSharp.Common.Geometry;
 using Color = System.Drawing.Color;
 
@@ -286,7 +287,7 @@ namespace FedAllChampionsUtility
                 {
                     Vector2 posAfterE = pPos + (Vector2.Normalize(enemy.Position.To2D() - pPos) * E.Range);
                     if ((target.Distance(posAfterE) < dist
-                        || target.Distance(posAfterE) < Orbwalking.GetRealAutoAttackRange(target) + 100)
+                        || target.Distance(posAfterE) < LXOrbwalker.GetAutoAttackRange(target) + 100)
                         && goesThroughWall(target.Position, posAfterE.To3D()))
                     {
                         if (useENormal(target))
@@ -318,7 +319,7 @@ namespace FedAllChampionsUtility
             var minions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range + 50);
             foreach (var minion in minions.Where(minion => minion.IsValidTarget(Q.Range)))
             {
-                if (Player.Distance(minion) < Orbwalking.GetRealAutoAttackRange(minion) && minion.Health < Player.GetAutoAttackDamage(minion))
+                if (Player.Distance(minion) < LXOrbwalker.GetAutoAttackRange(minion) && minion.Health < Player.GetAutoAttackDamage(minion))
                     return;
                 if (Program.Menu.Item("useElh").GetValue<bool>() && minion.Health < Player.GetSpellDamage(minion, E.Slot))
                     useENormal(minion);
@@ -1175,24 +1176,24 @@ namespace FedAllChampionsUtility
                 DetectedSkillshots.RemoveAll(skillshot => !skillshot.IsActive());
 
                 Obj_AI_Hero target = SimpleTs.GetTarget(1250, SimpleTs.DamageType.Physical);
-                if (Program.Orbwalker.ActiveMode.ToString() == "Combo")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                 {
                     doCombo(target);
                 }
 
-                if (Program.Orbwalker.ActiveMode.ToString() == "LastHit")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit)
                 {
                     doLastHit(target);
                     useQSmart(target);
                 }
 
-                if (Program.Orbwalker.ActiveMode.ToString() == "Mixed")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
                 {
                     doLastHit(target);
                     useQSmart(target);
                 }
 
-                if (Program.Orbwalker.ActiveMode.ToString() == "LaneClear")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
                 {
                     doLaneClear(target);
                 }
@@ -1262,7 +1263,7 @@ namespace FedAllChampionsUtility
                     useRKill();
                 }  
 
-                if (Program.Menu.Item("harassOn").GetValue<bool>() && Program.Orbwalker.ActiveMode.ToString() == "None")
+                if (Program.Menu.Item("harassOn").GetValue<bool>() && LXOrbwalker.CurrentMode.ToString() == "None")
                 {
                     useQSmart(target, Program.Menu.Item("harQ3Only").GetValue<bool>());
                 }
@@ -1278,7 +1279,7 @@ namespace FedAllChampionsUtility
                 //smartEDog
                 if (Program.Menu.Item("smartEDogue").GetValue<bool>())
                 {
-                    //useEtoSafe(target, (Program.Orbwalker.ActiveMode.ToString() == "Combo")?true:false);
+                    //useEtoSafe(target, (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)?true:false);
                 }
 
 

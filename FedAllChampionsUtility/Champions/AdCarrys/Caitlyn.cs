@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -106,17 +107,17 @@ namespace FedAllChampionsUtility
 
             var Qmode = Program.Menu.Item("UseQ").GetValue<StringList>().SelectedIndex;
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Qmode == 0 || Qmode == 2)
                         Cast_BasicLineSkillshot_Enemy(Q);
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if ((Qmode == 1 || Qmode == 2) && GetManaPercent() >= Program.Menu.Item("minMana").GetValue<Slider>().Value)
                         Cast_BasicLineSkillshot_Enemy(Q);
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     if (Program.Menu.Item("UseQFarm").GetValue<bool>() && GetManaPercent() >= Program.Menu.Item("minMana").GetValue<Slider>().Value)
                         Cast_BasicLineSkillshot_AOE_Farm(Q);
                     break;
@@ -219,7 +220,7 @@ namespace FedAllChampionsUtility
             var eTarget = SimpleTs.GetTarget(E.Range - 50, SimpleTs.DamageType.Physical);
             var QonlyAA = Program.Menu.Item("QMin").GetValue<bool>();
 
-            if (QonlyAA && Orbwalking.InAutoAttackRange(qTarget)) return;
+            if (QonlyAA && LXOrbwalker.InAutoAttackRange(qTarget)) return;
 
             if (Program.Menu.Item("KillQ").GetValue<bool>() && Program.Menu.Item("KillEQ").GetValue<bool>() && Q.IsReady() && E.IsReady() && eTarget.Health < (ObjectManager.Player.GetSpellDamage(eTarget, SpellSlot.E) + ObjectManager.Player.GetSpellDamage(eTarget, SpellSlot.Q)) * 0.9)
             {
@@ -443,7 +444,7 @@ namespace FedAllChampionsUtility
             if (minHit != null)
             {
                 var QonlyAA = Program.Menu.Item("QMin").GetValue<bool>();
-                if (QonlyAA && Orbwalking.InAutoAttackRange(minHit)) return;
+                if (QonlyAA && LXOrbwalker.InAutoAttackRange(minHit)) return;
 
                 Q.Cast(minHit, true);
             }

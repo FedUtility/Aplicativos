@@ -6,6 +6,7 @@ using System.Reflection;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -88,7 +89,7 @@ namespace FedAllChampionsUtility
 
         static void Game_OnGameUpdate(EventArgs args)
         {
-            Program.Orbwalker.SetAttack(true);
+            LXOrbwalker.SetAttack(true);
             
             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
 

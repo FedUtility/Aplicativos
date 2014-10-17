@@ -30,7 +30,7 @@ namespace FedAllChampionsUtility
         {
             _menu = Program.Menu.AddSubMenu(new Menu("Auto Bush Revealer", "AutoBushRevealer"));
             _menu.AddItem(new MenuItem("AutoBushEnabled", "Enabled").SetValue(true));
-            _menu.AddItem(new MenuItem("AutoBushKey", "Key").SetValue(new KeyBind(Program.Menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press))); //32 == space
+            _menu.AddItem(new MenuItem("AutoBushKey", "Key").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
 
             var useWardsMenu = _menu.AddSubMenu(new Menu("Use Wards: ", "AutoBushUseWards"));
 

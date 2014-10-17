@@ -4,6 +4,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -96,9 +97,9 @@ namespace FedAllChampionsUtility
 					break;
 			}
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						CastQEnemy();
 					if(Program.Menu.Item("useW_TeamFight").GetValue<bool>() && GnarState > 1)
@@ -108,13 +109,13 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_TeamFight").GetValue<bool>() && GnarState > 1)
 						CastREnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						CastQEnemy();
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>() && GnarState > 1)
 						CastWEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
 					{
 						CastQEnemy();
@@ -126,7 +127,7 @@ namespace FedAllChampionsUtility
 						CastWMinion();
 					}
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
+				case LXOrbwalker.Mode.Lasthit:
 					if(Program.Menu.Item("useQ_LastHit").GetValue<bool>())
 						CastQMinion();
 					break;
@@ -229,12 +230,12 @@ namespace FedAllChampionsUtility
 			{
 				if(!minion.IsValidTarget())
 					continue;
-				var minionInRangeAa = Orbwalking.InAutoAttackRange(minion);
+                var minionInRangeAa = LXOrbwalker.InAutoAttackRange(minion);
 				var minionInRangeSpell = minion.Distance(ObjectManager.Player) <= Q.Range;
 				var minionKillableAa = ObjectManager.Player.GetAutoAttackDamage(minion) >= minion.Health;
 				var minionKillableSpell = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health;
-				var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-				var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+				var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+				var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 
 				if((lastHit && minionInRangeSpell && minionKillableSpell) && ((minionInRangeAa && !minionKillableAa) || !minionInRangeAa))
 					Q.Cast(minion.Position, Packets());
@@ -263,12 +264,12 @@ namespace FedAllChampionsUtility
 			{
 				if(!minion.IsValidTarget())
 					continue;
-				var minionInRangeAa = Orbwalking.InAutoAttackRange(minion);
+                var minionInRangeAa = LXOrbwalker.InAutoAttackRange(minion);
 				var minionInRangeSpell = minion.Distance(ObjectManager.Player) <= W.Range;
 				var minionKillableAa = ObjectManager.Player.GetAutoAttackDamage(minion) >= minion.Health;
 				var minionKillableSpell = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.W) >= minion.Health;
-				var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-				var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+				var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+				var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 
 				if((lastHit && minionInRangeSpell && minionKillableSpell) && ((minionInRangeAa && !minionKillableAa) || !minionInRangeAa))
 					W.Cast(minion.Position, Packets());

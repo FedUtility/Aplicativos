@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -69,14 +70,14 @@ namespace FedAllChampionsUtility
         private void Game_OnGameUpdate(EventArgs args)
         {            
 
-            if (Program.Orbwalker.ActiveMode.ToString() == "Combo")
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
             {
                 Combo();
             }
             else
             {
 
-                if (Program.Orbwalker.ActiveMode.ToString() == "Mixed")
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
                 {
                     Harass();
                 }
@@ -87,7 +88,7 @@ namespace FedAllChampionsUtility
                 AutoCrescendo();
             }
 
-            if (Program.Orbwalker.ActiveMode.ToString() != "Combo" && Program.Orbwalker.ActiveMode.ToString() != "Mixed")
+            if (LXOrbwalker.CurrentMode.ToString() != "Combo" && LXOrbwalker.CurrentMode.ToString() != "Mixed")
             {
                 if (Program.Menu.Item("AutoQ").GetValue<bool>() && Q.IsReady())
                 {

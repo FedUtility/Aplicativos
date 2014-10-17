@@ -4,6 +4,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -112,9 +113,9 @@ namespace FedAllChampionsUtility
 			if(Program.Menu.Item("useE_Passive").GetValue<KeyBind>().Active )
 				CastE();
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						CastQEnemy();
 					if(Program.Menu.Item("useE_TeamFight").GetValue<bool>())
@@ -124,7 +125,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
 						CastR();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						CastQEnemy();
 					if(Program.Menu.Item("useE_Harass").GetValue<bool>())
@@ -132,7 +133,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>())
 						CastWEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
 					{
 						CastQEnemy();
@@ -141,7 +142,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useE_LaneClear").GetValue<bool>())
 						CastE();
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
+				case LXOrbwalker.Mode.Lasthit:
 					if(Program.Menu.Item("useQ_LastHit").GetValue<bool>())
 						CastQMinion();
 					break;
@@ -176,12 +177,12 @@ namespace FedAllChampionsUtility
 				return;
 			
 			if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
-				if(Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+				if(LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
 					if(R.IsReady() && CloneR == null && Q.IsReady() && E.IsReady() && IsEnoughEnergy(GetCost(SpellSlot.Q) + GetCost(SpellSlot.W) + GetCost(SpellSlot.E) + GetCost(SpellSlot.R)))
 						return;
 
-			if((Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && Program.Menu.Item("useW_Harass").GetValue<bool>() ||
-				(Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo  && Program.Menu.Item("useW_TeamFight").GetValue<bool>())))
+			if((LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass && Program.Menu.Item("useW_Harass").GetValue<bool>() ||
+				(LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo  && Program.Menu.Item("useW_TeamFight").GetValue<bool>())))
 				if (W.IsReady() && CloneW == null)
 					return;
 
@@ -215,12 +216,12 @@ namespace FedAllChampionsUtility
 			{
 				if(!minion.IsValidTarget())
 					continue;
-				var minionInRangeAa = Orbwalking.InAutoAttackRange(minion);
+                var minionInRangeAa = LXOrbwalker.InAutoAttackRange(minion);
 				var minionInRangeSpell = minion.Distance(ObjectManager.Player) <= Q.Range;
 				var minionKillableAa = ObjectManager.Player.GetAutoAttackDamage(minion) >= minion.Health;
 				var minionKillableSpell = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health;
-				var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-				var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+				var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+				var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 
 				if((lastHit && minionInRangeSpell && minionKillableSpell) && ((minionInRangeAa && !minionKillableAa) || !minionInRangeAa))
 					Q.Cast(minion.Position, Packets());
@@ -233,7 +234,7 @@ namespace FedAllChampionsUtility
 		{
 
 			if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
-			if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+			if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
 				if(R.IsReady() && CloneR == null && Q.IsReady() && E.IsReady() && IsEnoughEnergy(GetCost(SpellSlot.Q) + GetCost(SpellSlot.W) + GetCost(SpellSlot.E) + GetCost(SpellSlot.R)))
 					return;
 			if(Delay2 >= Environment.TickCount - DelayTick2)
@@ -244,9 +245,9 @@ namespace FedAllChampionsUtility
 			{
 				if (ObjectManager.Player.Health*100/ObjectManager.Player.MaxHealth > target.Health*100/target.MaxHealth &&
 				    (Program.Menu.Item("followW_TeamFight").GetValue<bool>() &&
-				     Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) ||
+				     LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo) ||
 				    (Program.Menu.Item("followW_Harass").GetValue<bool>() &&
-				     Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed))
+				     LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass))
 					if (CloneW.Position.Distance(target.Position) < ObjectManager.Player.Position.Distance(target.Position))
 						W.Cast();
 			}
@@ -260,8 +261,8 @@ namespace FedAllChampionsUtility
 				    (W.IsReady() && E.IsReady() && target.IsValidTarget(W.Range + E.Range) &&
 				     IsEnoughEnergy(GetCost(SpellSlot.W) + GetCost(SpellSlot.E)))
 				    ||
-				    (W.IsReady() && target.IsValidTarget(E.Range + Orbwalking.GetRealAutoAttackRange(target)) &&
-				     Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo))
+                    (W.IsReady() && target.IsValidTarget(E.Range + LXOrbwalker.GetAutoAttackRange(target)) &&
+				     LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo))
 				{
 					W.Cast(target.Position, Packets());
 				}
@@ -274,7 +275,7 @@ namespace FedAllChampionsUtility
 				return;
 
 			if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
-				if(Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+				if(LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
 					if(R.IsReady() && CloneR == null && Q.IsReady() && E.IsReady() && IsEnoughEnergy(GetCost(SpellSlot.Q) + GetCost(SpellSlot.W) + GetCost(SpellSlot.E) + GetCost(SpellSlot.R)))
 						return;
 
@@ -298,7 +299,7 @@ namespace FedAllChampionsUtility
 					return;
 				}
 
-			if(Program.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear)
+			if(LXOrbwalker.CurrentMode != LXOrbwalker.Mode.LaneClear)
 				return;
 			var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.NotAlly);
 			foreach(var minion in allMinions)

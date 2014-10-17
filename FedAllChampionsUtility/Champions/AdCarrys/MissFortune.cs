@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -96,8 +97,8 @@ namespace FedAllChampionsUtility
 			{
 				if (args.SData.Name == "MissFortuneBulletTime")
 				{
-					Program.Orbwalker.SetAttack(false);
-					Program.Orbwalker.SetMovement(false);
+					LXOrbwalker.SetAttack(false);
+                    LXOrbwalker.SetMovement(false);
 					UltTick  = Environment.TickCount;
 				}
 			}
@@ -106,12 +107,12 @@ namespace FedAllChampionsUtility
 		{
 			if (IsShooting())
 				return;
-			Program.Orbwalker.SetAttack(true);
-			Program.Orbwalker.SetMovement(true);
+			LXOrbwalker.SetAttack(true);
+			LXOrbwalker.SetMovement(true);
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						CastQEnemy();
 					if(Program.Menu.Item("useW_TeamFight").GetValue<bool>())
@@ -123,7 +124,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_TeamFight_willhit").GetValue<Slider>().Value >= 1)
 						CastREnemyAmount();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>() && ManaManagerAllowCast(Q))
 						CastQEnemy();
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>() && ManaManagerAllowCast(W))
@@ -133,7 +134,7 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useE_Harass_willhit").GetValue<Slider>().Value >= 1 && ManaManagerAllowCast(E))
 						CastEEnemyAmount();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>() && ManaManagerAllowCast(Q))
 						CastQMinion();
 					if(Program.Menu.Item("useW_LaneClear").GetValue<bool>() && ManaManagerAllowCast(W))
@@ -167,8 +168,8 @@ namespace FedAllChampionsUtility
 						enemy =>
 							R.CastIfWillHit(enemy, Program.Menu.Item("useR_TeamFight_willhit").GetValue<Slider>().Value - 1, Packets())))
 				return;
-			Program.Orbwalker.SetAttack(false);
-			Program.Orbwalker.SetMovement(false);
+			LXOrbwalker.SetAttack(false);
+            LXOrbwalker.SetMovement(false);
 			UltTick = Environment.TickCount;
 		}
 
@@ -200,15 +201,15 @@ namespace FedAllChampionsUtility
 			if(!W.IsReady())
 				return;
 
-			var target = SimpleTs.GetTarget(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), SimpleTs.DamageType.Physical);
+			var target = SimpleTs.GetTarget(LXOrbwalker.GetAutoAttackRange(ObjectManager.Player), SimpleTs.DamageType.Physical);
 			if(target != null)
 				W.Cast();
 
-			if(Program.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LaneClear)
+			if(LXOrbwalker.CurrentMode != LXOrbwalker.Mode.LaneClear)
 				return;
 			var allMinion = MinionManager.GetMinions(ObjectManager.Player.Position,
-				Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), MinionTypes.All, MinionTeam.NotAlly);
-			if(!allMinion.Any(minion => minion.IsValidTarget(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))))
+				LXOrbwalker.GetAutoAttackRange(ObjectManager.Player), MinionTypes.All, MinionTeam.NotAlly);
+			if(!allMinion.Any(minion => minion.IsValidTarget(LXOrbwalker.GetAutoAttackRange(ObjectManager.Player))))
 				return;
 			W.Cast();
 		}

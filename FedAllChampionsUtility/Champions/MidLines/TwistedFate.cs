@@ -10,6 +10,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 #endregion
 
 namespace FedAllChampionsUtility
@@ -31,7 +32,7 @@ namespace FedAllChampionsUtility
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += DrawingOnOnEndScene;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
-            Orbwalking.BeforeAttack += OrbwalkingOnBeforeAttack;
+            LXOrbwalker.BeforeAttack += OrbwalkingOnBeforeAttack;
            
             PluginLoaded();
         }
@@ -103,7 +104,7 @@ namespace FedAllChampionsUtility
             Packet.S2C.Ping.Encoded(new Packet.S2C.Ping.Struct(PingLocation.X, PingLocation.Y, 0, 0, Packet.PingType.FallbackSound)).Process();
         }
 
-        private static void OrbwalkingOnBeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        private static void OrbwalkingOnBeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
             if(args.Target is Obj_AI_Hero)
                 args.Process = CardSelector.Status != SelectStatus.Selecting && Environment.TickCount - CardSelector.LastWSent > 300;
@@ -288,7 +289,7 @@ namespace FedAllChampionsUtility
 
             if (CardSelector.Status == SelectStatus.Selected && combo)
             {
-                var target = Program.Orbwalker.GetTarget();
+                var target = LXOrbwalker.GetPossibleTarget();
                 if (target.IsValidTarget() && target is Obj_AI_Hero && Items.HasItem("DeathfireGrasp") && ComboDamage((Obj_AI_Hero)target) >= target.Health)
                 {
                     Items.UseItem("DeathfireGrasp", (Obj_AI_Hero) target);

@@ -1,6 +1,7 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -71,9 +72,9 @@ namespace FedAllChampionsUtility
 
 		private void Game_OnGameUpdate(EventArgs args)
 		{
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						Cast_BasicLineSkillshot_Enemy(Q);
 					if(Program.Menu.Item("useW_TeamFight").GetValue<bool>())
@@ -81,19 +82,19 @@ namespace FedAllChampionsUtility
 					if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
 						CastREnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						Cast_BasicLineSkillshot_Enemy(Q);
 					if(Program.Menu.Item("useW_Harass").GetValue<bool>())
 						Cast_BasicLineSkillshot_Enemy(W, SimpleTs.DamageType.Magical);
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
+				case LXOrbwalker.Mode.LaneClear:
 					if(Program.Menu.Item("useQ_LaneClear_enemy").GetValue<bool>())
 						Cast_BasicLineSkillshot_Enemy(Q);
 					if(Program.Menu.Item("useQ_LaneClear_minion").GetValue<bool>())
 						Cast_Basic_Farm(Q,true);
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
+				case LXOrbwalker.Mode.Lasthit:
 					if(Program.Menu.Item("useQ_LastHit").GetValue<bool>())
 						Cast_Basic_Farm(Q,true);
 					break;

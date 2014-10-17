@@ -6,6 +6,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -33,7 +34,7 @@ namespace FedAllChampionsUtility
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
-            Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
+            LXOrbwalker.BeforeAttack += Orbwalking_BeforeAttack;
 
             PluginLoaded();
         }
@@ -126,7 +127,7 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("Drawings").AddItem(dmgAfterComboItem);
         }
 
-        private void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        private void Orbwalking_BeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
             if (Program.Menu.Item("ComboActive").GetValue<KeyBind>().Active)
                 args.Process = !(Q.IsReady() || W.IsReady());
@@ -397,7 +398,7 @@ namespace FedAllChampionsUtility
                 }
                 else
                     foreach (var minion in allMinionsQ)
-                        if (!Orbwalking.InAutoAttackRange(minion) &&
+                        if (!LXOrbwalker.InAutoAttackRange(minion) &&
                             minion.Health < 0.75 * ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q))
                             Q.Cast(minion);
 

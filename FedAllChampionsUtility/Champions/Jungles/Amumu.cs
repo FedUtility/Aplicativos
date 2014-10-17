@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
+using LX_Orbwalker;
 using LeagueSharp.Common;
 
 namespace FedAllChampionsUtility
@@ -65,12 +66,12 @@ namespace FedAllChampionsUtility
             if(_menu.Item("aimQ" + ObjectManager.Player.ChampionName).GetValue<KeyBind>().Active)
                 CastQ(Program.Helper.EnemyTeam.Where(x => x.IsValidTarget(_spellQ.Range) && x.Distance(Game.CursorPos) < 400).OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault());
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     Combo();
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     LaneClear();
                     break;
                 default:
@@ -147,7 +148,7 @@ namespace FedAllChampionsUtility
                 Obj_AI_Base target = SimpleTs.GetTarget(_spellQ.Range, SimpleTs.DamageType.Magical);
 
                 if (target != null)
-                    if (comboQ == 1 || (comboQ == 2 && !Orbwalking.InAutoAttackRange(target)))
+                    if (comboQ == 1 || (comboQ == 2 && !LXOrbwalker.InAutoAttackRange(target)))
                         CastQ(target);
             }
 
@@ -191,7 +192,7 @@ namespace FedAllChampionsUtility
                 Obj_AI_Base minion = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _spellQ.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth).FirstOrDefault(x => _spellQ.GetPrediction(x).Hitchance >= HitChance.Medium);
 
                 if (minion != null)
-                    if (farmQ == 1 || (farmQ == 2 && !Orbwalking.InAutoAttackRange(minion)))
+                    if (farmQ == 1 || (farmQ == 2 && !LXOrbwalker.InAutoAttackRange(minion)))
                         CastQ(minion, HitChance.Medium);
             }
 

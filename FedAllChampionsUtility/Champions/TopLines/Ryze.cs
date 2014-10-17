@@ -6,6 +6,7 @@ using System.Linq;
 using SharpDX;
 using LeagueSharp;
 using LeagueSharp.Common;
+using LX_Orbwalker;
 #endregion
 
 namespace FedAllChampionsUtility
@@ -26,7 +27,7 @@ namespace FedAllChampionsUtility
             LoadMenu();
 
             Game.OnGameUpdate += Game_OnGameUpdate;
-            Orbwalking.BeforeAttack += OrbwalkingOnBeforeAttack;
+            LXOrbwalker.BeforeAttack += OrbwalkingOnBeforeAttack;
             Drawing.OnDraw += Drawing_OnDraw;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;	
@@ -84,23 +85,23 @@ namespace FedAllChampionsUtility
         {
             target = SimpleTs.GetTarget(Q.Range + 25, SimpleTs.DamageType.Magical);
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
             {
                 if (Program.Menu.Item("TypeCombo").GetValue<StringList>().SelectedIndex == 0) ComboMixed();
                 else if (Program.Menu.Item("TypeCombo").GetValue<StringList>().SelectedIndex == 1) ComboBurst();
                 else if (Program.Menu.Item("TypeCombo").GetValue<StringList>().SelectedIndex == 2) ComboLong();
             }
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
             {
                 Harass();
             }
 
-            var lc = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
-            if (lc || Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            var lc = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
+            if (lc || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
                 Farm(lc);
 
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
             {
                 JungleFarm();
             }
@@ -131,9 +132,9 @@ namespace FedAllChampionsUtility
             }
         }
 
-        private static void OrbwalkingOnBeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        private static void OrbwalkingOnBeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
-            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                 args.Process = !(Q.IsReady() || W.IsReady() || E.IsReady() ||ObjectManager.Player.Distance(args.Target) >= 600);
         }
 

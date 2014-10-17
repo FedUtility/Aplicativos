@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 
@@ -130,19 +131,19 @@ namespace FedAllChampionsUtility
             CastW();
             CastR();            
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Program.Menu.Item("useQ_Combo").GetValue<bool>())
                         CastQ();
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if (!ManaManagerAllowCast(Q))
                         return;
                     if (Program.Menu.Item("useQ_Harass").GetValue<bool>())
                         CastQ();
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     LaneClear();
                     break;                
             }
@@ -221,13 +222,13 @@ namespace FedAllChampionsUtility
             if (Ball.IsMoving || !W.IsReady())
                 return;
             W.UpdateSourcePosition(Ball.BallPosition, ObjectManager.Player.Position);
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (EnemysinRange(W.Range, 1, Ball.BallPosition))
                         W.Cast();
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if (!ManaManagerAllowCast(W))
                         return;
                     if (EnemysinRange(W.Range, 1, Ball.BallPosition))
@@ -257,7 +258,7 @@ namespace FedAllChampionsUtility
             {
                 lowestFriend[0] = friend;
             }
-            if (lowestFriend[0] != null && Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (lowestFriend[0] != null && LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                 E.Cast(lowestFriend[0], Packets());           
         }
 
@@ -267,9 +268,9 @@ namespace FedAllChampionsUtility
                 return;
             if (EnemysinRange(R.Range, Program.Menu.Item("useR_Auto").GetValue<Slider>().Value, Ball.BallPosition))
                 R.Cast();
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Program.AllHerosEnemy.Any(hero => hero.IsValidTarget() && hero.Position.Distance(Ball.BallPosition) < R.Range && (ObjectManager.Player.GetSpellDamage(hero, SpellSlot.R) > hero.Health || ObjectManager.Player.GetSpellDamage(hero, SpellSlot.R) + ObjectManager.Player.GetSpellDamage(hero, SpellSlot.W) > hero.Health && W.IsReady())))
                         R.Cast();
                     break;

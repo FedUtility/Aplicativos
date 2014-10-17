@@ -2,6 +2,7 @@
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -4853,9 +4854,9 @@ namespace FedAllChampionsUtility
                     return Program.Menu.Item("act_item_" + Id + "_use").GetValue<bool>();
                 if (TypeItem == ItemType.Offensive)
                 {
-                    if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
                         return Program.Menu.Item("act_item_" + Id + "_useCombo").GetValue<bool>();
-                    if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+                    if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
                         return Program.Menu.Item("act_item_" + Id + "_useHarass").GetValue<bool>();
                 }
                 return false;

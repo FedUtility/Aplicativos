@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
+using LX_Orbwalker;
 using LeagueSharp.Common;
 
 namespace FedAllChampionsUtility
@@ -10,9 +11,7 @@ namespace FedAllChampionsUtility
 	{
 		public const int LocalVersion = 68;
 		public static Champion Champion;
-		public static Menu Menu;
-		public static Orbwalking.Orbwalker Orbwalker;
-        public static Azir.Orbwalking.Orbwalker Azirwalker;
+		public static Menu Menu;		     
         public static Helper Helper;
         public static Map map;
         public static jJungleTimers jungler;
@@ -52,20 +51,12 @@ namespace FedAllChampionsUtility
 
                 var targetSelectorMenu = new Menu("Target Selector", "TargetSelector");
                 SimpleTs.AddToMenu(targetSelectorMenu);
-                Menu.AddSubMenu(targetSelectorMenu);
+                Menu.AddSubMenu(targetSelectorMenu); 
 
-                if (ObjectManager.Player.ChampionName == "Azir")
-                {
-                    var orbwalking = Menu.AddSubMenu(new Menu("AzirWalking", "Orbwalking"));
-                    Azirwalker = new Azir.Orbwalking.Orbwalker(orbwalking);
-                    Menu.Item("FarmDelay").SetValue(new Slider(125, 100, 200));
-                }
-                else
-                {
-                    var orbwalking = Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-                    Orbwalker = new Orbwalking.Orbwalker(orbwalking);
-                    Menu.Item("FarmDelay").SetValue(new Slider(0, 0, 200));
-                }
+                //Orbwalker submenu
+                var orbwalkerMenu = new Menu("Orbwalker", "Orbwalker");
+                LXOrbwalker.AddToMenu(orbwalkerMenu);
+                Menu.AddSubMenu(orbwalkerMenu);
                 
                 var skinchanger = new SkinChanger();
                 var disconect = new DisconnectAlerter();

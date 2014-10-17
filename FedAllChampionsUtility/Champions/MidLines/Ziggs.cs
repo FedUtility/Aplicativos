@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -623,7 +624,7 @@ namespace FedAllChampionsUtility
                 {
                     foreach (var minion in allMinions)
                     {
-                        if (!Orbwalking.InAutoAttackRange(minion))
+                        if (!LXOrbwalker.InAutoAttackRange(minion))
                         {
                             var Qdamage = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) * 0.75;
 

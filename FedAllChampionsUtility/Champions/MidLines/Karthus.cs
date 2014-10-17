@@ -4,6 +4,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 
 namespace FedAllChampionsUtility
 {
@@ -86,26 +87,26 @@ namespace FedAllChampionsUtility
 		{
 			if(_menu.Item("ultKS").GetValue<bool>())
 				UltKs();
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
-					Program.Orbwalker.SetAttack(_menu.Item("comboAA").GetValue<bool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
+				case LXOrbwalker.Mode.Combo:
+					LXOrbwalker.SetAttack(_menu.Item("comboAA").GetValue<bool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
 					Combo();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
-					Program.Orbwalker.SetAttack(true);
+				case LXOrbwalker.Mode.Harass:
+                    LXOrbwalker.SetAttack(true);
 					Harass();
 					break;
-				case Orbwalking.OrbwalkingMode.LaneClear:
-					Program.Orbwalker.SetAttack(_menu.Item("farmAA").GetValue<bool>() || ObjectManager.Player.Mana < 100);
+				case LXOrbwalker.Mode.LaneClear:
+                    LXOrbwalker.SetAttack(_menu.Item("farmAA").GetValue<bool>() || ObjectManager.Player.Mana < 100);
 					LaneClear();
 					break;
-				case Orbwalking.OrbwalkingMode.LastHit:
-					Program.Orbwalker.SetAttack(true);
+				case LXOrbwalker.Mode.Lasthit:
+                    LXOrbwalker.SetAttack(true);
 					LastHit();
 					break;
 				default:
-                    Program.Orbwalker.SetAttack(true);
+                    LXOrbwalker.SetAttack(true);
 					RegulateEState();
 
                     if (_menu.Item("autoCast").GetValue<bool>())

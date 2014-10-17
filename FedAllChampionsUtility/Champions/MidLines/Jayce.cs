@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -50,7 +51,7 @@ namespace FedAllChampionsUtility
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDelete;
-            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            LXOrbwalker.AfterAttack += Orbwalking_AfterAttack;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
 
@@ -510,6 +511,8 @@ namespace FedAllChampionsUtility
 
         public static void castQCannonMouse()
         {
+            LXOrbwalker.Orbwalk(Game.CursorPos, null);
+            
             if (HammerTime && !R.IsReady())
                 return;
 
@@ -598,7 +601,7 @@ namespace FedAllChampionsUtility
             //check if player is dead
             if (ObjectManager.Player.IsDead) return;
 
-            Program.Orbwalker.SetAttack(true);
+            LXOrbwalker.SetAttack(true);
 
             //cd check
             ProcessCooldowns();
@@ -639,7 +642,7 @@ namespace FedAllChampionsUtility
                     if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0)
                         if (useWCombo)
                         {
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                             W.Cast();
                         }
                 }
@@ -649,7 +652,7 @@ namespace FedAllChampionsUtility
                     if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0)
                         if (useWHarass)
                         {
-                            Orbwalking.ResetAutoAttackTimer();
+                            LXOrbwalker.ResetAutoAttackTimer();
                             W.Cast();
                         }
                 }

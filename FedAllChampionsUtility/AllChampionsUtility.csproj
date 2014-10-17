@@ -64,70 +64,79 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Champions\Jungles\Elise.cs" />
-    <Compile Include="Champions\Jungles\Sion.cs" />
-    <Compile Include="Champions\Jungles\Vi.cs" />
-    <Compile Include="Champions\MidLines\Diana.cs" />
-    <Compile Include="Champions\MidLines\Jayce.cs" />
-    <Compile Include="Champions\MidLines\Orianna.cs" />
-    <Compile Include="Champions\MidLines\Yasuo\Missle.cs" />
-    <Compile Include="Champions\TopLines\Ryze.cs" />
-    <Compile Include="SpellData.cs" />
-    <Compile Include="Utilitys\CardSelector.cs" />
+    <Compile Include="Champions\AdCarrys\Ashe.cs" />
     <Compile Include="Champions\AdCarrys\Caitlyn.cs" />
+    <Compile Include="Champions\AdCarrys\Draven.cs" />
+    <Compile Include="Champions\AdCarrys\Ezreal.cs" />
+    <Compile Include="Champions\AdCarrys\Jinx.cs" />
+    <Compile Include="Champions\AdCarrys\Lucian.cs" />
+    <Compile Include="Champions\AdCarrys\MissFortune.cs" />
+    <Compile Include="Champions\AdCarrys\Tristana.cs" />
     <Compile Include="Champions\AdCarrys\Twitch.cs" />
+    <Compile Include="Champions\AdCarrys\Vayne.cs" />
+    <Compile Include="Champions\Jungles\Amumu.cs" />
+    <Compile Include="Champions\Jungles\Elise.cs" />
     <Compile Include="Champions\Jungles\JarvanIV.cs" />
+    <Compile Include="Champions\Jungles\Khazix.cs" />
     <Compile Include="Champions\Jungles\LeeSin.cs" />
     <Compile Include="Champions\Jungles\Maokai.cs" />
-    <Compile Include="Champions\Jungles\Amumu.cs" />
     <Compile Include="Champions\Jungles\Nocturne.cs" />
+    <Compile Include="Champions\Jungles\Sion.cs" />
+    <Compile Include="Champions\Jungles\Vi.cs" />
+    <Compile Include="Champions\MidLines\Ahri.cs" />
+    <Compile Include="Champions\MidLines\Brand.cs" />
+    <Compile Include="Champions\MidLines\Diana.cs" />
+    <Compile Include="Champions\MidLines\Jayce.cs" />
+    <Compile Include="Champions\MidLines\Karthus.cs" />
     <Compile Include="Champions\MidLines\Katarina.cs" />
-    <Compile Include="Champions\MidLines\Leblanc.cs" />
+    <Compile Include="Champions\MidLines\LeBlanc.cs" />
+    <Compile Include="Champions\MidLines\Orianna.cs" />
+    <Compile Include="Champions\MidLines\Swain.cs" />
+    <Compile Include="Champions\MidLines\Syndra.cs" />
     <Compile Include="Champions\MidLines\TwistedFate.cs" />
+    <Compile Include="Champions\MidLines\Xerath.cs" />
+    <Compile Include="Champions\MidLines\Yasuo\Missle.cs" />
     <Compile Include="Champions\MidLines\Yasuo\Yasuo.cs" />
-    <Compile Include="Champions\MidLines\Azir.cs" />
+    <Compile Include="Champions\MidLines\Zed.cs" />
+    <Compile Include="Champions\MidLines\Ziggs.cs" />
     <Compile Include="Champions\Support\Annie.cs" />
-    <Compile Include="Champions\TopLines\DrMundo.cs" />
+    <Compile Include="Champions\Support\Lulu.cs" />
+    <Compile Include="Champions\Support\Morgana.cs" />
+    <Compile Include="Champions\Support\Sona.cs" />
+    <Compile Include="Champions\Support\Thresh.cs" />
+    <Compile Include="Champions\Support\Zyra.cs" />
+    <Compile Include="Champions\TopLines\Gangplank.cs" />
+    <Compile Include="Champions\TopLines\Gnar.cs" />
     <Compile Include="Champions\TopLines\Jax.cs" />
+    <Compile Include="Champions\TopLines\Riven.cs" />
+    <Compile Include="Champions\TopLines\Ryze.cs" />
+    <Compile Include="Champions\TopLines\Teemo.cs" />
+    <Compile Include="SpellData.cs" />
+    <Compile Include="Utilitys\CardSelector.cs" />
+    <Compile Include="Champions\TopLines\DrMundo.cs" />
     <Compile Include="Geometrys.cs" />
     <Compile Include="Jump.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="OrbManager.cs" />
     <Compile Include="Polygon.cs" />
-    <Compile Include="Champions\MidLines\Syndra.cs" />
-    <Compile Include="Champions\Support\Sona.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protect.cs" />
     <Compile Include="Utilitys\Activator.cs" />
-    <Compile Include="Champions\MidLines\Ahri.cs" />
-    <Compile Include="Champions\AdCarrys\Ashe.cs" />
     <Compile Include="Utilitys\AutoLevelSpells.cs" />
     <Compile Include="Utilitys\AutoRevelarMoita.cs" />
     <Compile Include="AutoUpdater.cs" />
     <Compile Include="Utilitys\BaseUlt.cs" />
-    <Compile Include="Champions\MidLines\Brand.cs" />
     <Compile Include="Champion.cs" />
     <Compile Include="Chat.cs" />
     <Compile Include="Utilitys\DamageCalculator.cs" />
-    <Compile Include="Champions\AdCarrys\Draven.cs" />
     <Compile Include="Utilitys\Database.cs" />
     <Compile Include="Utilitys\DisconnectAlerter.cs" />
     <Compile Include="Utilitys\EnemmyRange.cs" />
-    <Compile Include="Champions\AdCarrys\Ezreal.cs" />
-    <Compile Include="Champions\TopLines\Gangplank.cs" />
-    <Compile Include="Champions\TopLines\Gnar.cs" />
     <Compile Include="HtmlColor.cs" />
-    <Compile Include="Champions\AdCarrys\Jinx.cs" />
-    <Compile Include="Champions\MidLines\Karthus.cs" />
-    <Compile Include="Champions\Jungles\Khazix.cs" />
     <Compile Include="Utilitys\jTimer.cs" />
     <Compile Include="Utilitys\JungleTimers.cs" />
     <Compile Include="Utilitys\Killability.cs" />
     <Compile Include="Utilitys\LasthitMarker.cs" />
-    <Compile Include="Champions\AdCarrys\Lucian.cs" />
-    <Compile Include="Champions\Support\Lulu.cs" />
-    <Compile Include="Champions\AdCarrys\MissFortune.cs" />
-    <Compile Include="Champions\Support\Morgana.cs" />
     <Compile Include="Utilitys\PotionManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -141,19 +150,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Champions\TopLines\Riven.cs" />
     <Compile Include="Utilitys\Revealer.cs" />
     <Compile Include="Utilitys\SkinChanger.cs" />
-    <Compile Include="Champions\MidLines\Swain.cs" />
-    <Compile Include="Champions\TopLines\Teemo.cs" />
-    <Compile Include="Champions\Support\Thresh.cs" />
     <Compile Include="Utilitys\Helper.cs" />
-    <Compile Include="Champions\AdCarrys\Tristana.cs" />
-    <Compile Include="Champions\AdCarrys\Vayne.cs" />
-    <Compile Include="Champions\MidLines\Xerath.cs" />
-    <Compile Include="Champions\MidLines\Zed.cs" />
-    <Compile Include="Champions\Support\Zyra.cs" />
-    <Compile Include="Champions\MidLines\Ziggs.cs" />
     <Compile Include="Utilitys\SummonerItems.cs" />
     <Compile Include="Utilitys\Tracker.cs" />
     <Compile Include="Utilitys\Trinket.cs" />
@@ -178,6 +177,9 @@
     <Reference Include="LeagueSharp.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\LeagueSharp.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LX-Orbwalker">
+      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\LX-Orbwalker.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -250,6 +252,7 @@
     <None Include="Resources\Skull.png" />
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

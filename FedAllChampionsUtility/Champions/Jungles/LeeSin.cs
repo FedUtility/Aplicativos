@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 #endregion
@@ -107,7 +108,7 @@ namespace FedAllChampionsUtility
             CastR_kill();
             target = SimpleTs.GetTarget(1500, SimpleTs.DamageType.Physical);
             checkLock(target);
-            Program.Orbwalker.SetAttack(true);            
+            LXOrbwalker.SetAttack(true);            
 
             if (Program.Menu.Item("ActiveWard").GetValue<KeyBind>().Active)
             {
@@ -135,7 +136,7 @@ namespace FedAllChampionsUtility
                useinsec();
             }
 
-            if (Program.Orbwalker.ActiveMode.ToString() == "LaneClear")
+            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
             {
 
             }

@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -134,9 +135,9 @@ namespace FedAllChampionsUtility
         private void OnUpdate(EventArgs args)
         {
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Program.Menu.Item("useQ_Combo").GetValue<bool>() && Environment.TickCount - QFollowTick >= QFollowTime)
                         if (Cast_BasicLineSkillshot_Enemy(Q) != null)
                             QFollowTick = Environment.TickCount;
@@ -154,14 +155,14 @@ namespace FedAllChampionsUtility
                         if (EnemysinRange(R.Range, Program.Menu.Item("useR_Combo_minHit").GetValue<Slider>().Value))
                             R.Cast();
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if (Program.Menu.Item("useQ_Harass").GetValue<bool>() && Environment.TickCount - QFollowTick >= QFollowTime)
                         if (Cast_BasicLineSkillshot_Enemy(Q) != null)
                             QFollowTick = Environment.TickCount;
                     if (Program.Menu.Item("useW_Harass_safe").GetValue<bool>())
                         SafeFriendLatern();
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     if (Program.Menu.Item("useE_LaneClear").GetValue<bool>())
                         Cast_BasicLineSkillshot_AOE_Farm(E);
                     break;

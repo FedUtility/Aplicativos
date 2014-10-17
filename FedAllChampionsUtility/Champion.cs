@@ -5,6 +5,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 
 
 namespace FedAllChampionsUtility
@@ -43,8 +44,8 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("Packets").AddItem(new MenuItem("usePackets", "= Use Packets").SetValue(true));
             Program.Menu.SubMenu("Packets").AddItem(new MenuItem("Packets_sep1", "========="));
 
-			Program.Menu.Item("Orbwalk").DisplayName = "TeamFight";
-			Program.Menu.Item("Farm").DisplayName = "Harass";
+			//Program.Menu.Item("Orbwalk").DisplayName = "TeamFight";
+			//Program.Menu.Item("Farm").DisplayName = "Harass";
 		}
 
 		public void Game_OnGameSendPacket(GamePacketEventArgs args)
@@ -53,7 +54,7 @@ namespace FedAllChampionsUtility
 				return;
 			var decodedPacket = Packet.C2S.Move.Decoded(args.PacketData);
 			if(decodedPacket.MoveType == 3 &&
-				(Program.Orbwalker.GetTarget().IsMinion && !Program.Menu.Item("hitMinions").GetValue<bool>()))
+                (LXOrbwalker.GetPossibleTarget().IsMinion && !Program.Menu.Item("hitMinions").GetValue<bool>()))
 				args.Process = false;
 		}
 
@@ -68,24 +69,14 @@ namespace FedAllChampionsUtility
             bool ismixed;
             bool islasthit;
             bool islaneclear;
-            if (ObjectManager.Player.ChampionName == "Azir")
-            {
-                ismixed = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.Mixed &&
+
+            ismixed = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass &&
                           ManaManagerList.Contains("ManaManager_Harass");
-                islasthit = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LastHit &&
+            islasthit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit &&
                             ManaManagerList.Contains("ManaManager_LastHit");
-                islaneclear = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LaneClear &&
+            islaneclear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear &&
                               ManaManagerList.Contains("ManaManager_LaneClear");
-            }
-            else
-            {
-                ismixed = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed &&
-                          ManaManagerList.Contains("ManaManager_Harass");
-                islasthit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit &&
-                            ManaManagerList.Contains("ManaManager_LastHit");
-                islaneclear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
-                              ManaManagerList.Contains("ManaManager_LaneClear");
-            }
+            
             if (ismixed)
             {
                 if ((int)ObjectManager.Player.Spellbook.GetSpell(spell.Slot).ManaCost <= 1)
@@ -181,12 +172,12 @@ namespace FedAllChampionsUtility
 			{
 				if(!minion.IsValidTarget())
 					continue;
-				var minionInRangeAa = Orbwalking.InAutoAttackRange(minion);
+                var minionInRangeAa = LXOrbwalker.InAutoAttackRange(minion);
 				var minionInRangeSpell = minion.Distance(ObjectManager.Player) <= spell.Range;
 				var minionKillableAa = ObjectManager.Player.GetAutoAttackDamage(minion) >= minion.Health;
 				var minionKillableSpell = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health;
-				var lastHit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit;
-				var laneClear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear;
+                var lastHit = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Lasthit;
+                var laneClear = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
 
 				if((lastHit && minionInRangeSpell && minionKillableSpell) && ((minionInRangeAa && !minionKillableAa) || !minionInRangeAa))
 					if(skillshot)
@@ -207,7 +198,7 @@ namespace FedAllChampionsUtility
 				return;
 
 			var friend = Program.Helper.OwnTeam.FirstOrDefault(x => x.Distance(ObjectManager.Player) <= spell.Range &&
-                Program.Helper.EnemyTeam.Any(enemy => x.Distance(enemy) <= Orbwalking.GetRealAutoAttackRange(x) + 200 && x.BaseAttackDamage * x.AttackSpeedMod * 3 >= enemy.Health));
+                Program.Helper.EnemyTeam.Any(enemy => x.Distance(enemy) <= LXOrbwalker.GetAutoAttackRange(x) + 200 && x.BaseAttackDamage * x.AttackSpeedMod * 3 >= enemy.Health));
 
 			if(friend == null)
 				return;

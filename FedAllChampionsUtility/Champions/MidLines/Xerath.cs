@@ -8,6 +8,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using LX_Orbwalker;
 
 
 #endregion
@@ -116,9 +117,9 @@ namespace FedAllChampionsUtility
         {
             R_Check();
 
-            switch (Program.Orbwalker.ActiveMode)
+            switch (LXOrbwalker.CurrentMode)
             {
-                case Orbwalking.OrbwalkingMode.Combo:
+                case LXOrbwalker.Mode.Combo:
                     if (Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
                         QEnemy();
                     if (Program.Menu.Item("useW_TeamFight").GetValue<bool>())
@@ -126,13 +127,13 @@ namespace FedAllChampionsUtility
                     if (Program.Menu.Item("useE_TeamFight").GetValue<bool>())
                         Cast_BasicLineSkillshot_Enemy(E, SimpleTs.DamageType.Magical);
                     break;
-                case Orbwalking.OrbwalkingMode.Mixed:
+                case LXOrbwalker.Mode.Harass:
                     if (Program.Menu.Item("useQ_Harass").GetValue<bool>() && (ManaManagerAllowCast(Q) || Q.IsCharging))
                         QEnemy();
                     if (Program.Menu.Item("useW_Harass").GetValue<bool>() && ManaManagerAllowCast(W))
                         Cast_BasicCircleSkillshot_Enemy(W, SimpleTs.DamageType.Magical);
                     break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
+                case LXOrbwalker.Mode.LaneClear:
                     if (Program.Menu.Item("useQ_LaneClear").GetValue<bool>() && (ManaManagerAllowCast(Q) || Q.IsCharging))
                         QFarm();
                     if (Program.Menu.Item("useW_LaneClear").GetValue<bool>() && ManaManagerAllowCast(Q))

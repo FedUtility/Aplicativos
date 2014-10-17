@@ -4,6 +4,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using LX_Orbwalker;
 using Color = System.Drawing.Color;
 
 namespace FedAllChampionsUtility
@@ -22,7 +23,7 @@ namespace FedAllChampionsUtility
 
 			Drawing.OnDraw += Drawing_OnDraw;
 			Game.OnGameUpdate += Game_OnGameUpdate;
-			Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            LXOrbwalker.AfterAttack += Orbwalking_AfterAttack;
 			ShroomPositions = new ShroomTables();
 			PluginLoaded();
 		}
@@ -73,10 +74,10 @@ namespace FedAllChampionsUtility
 		{
 			PutShromsAuto();
 
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
 					
-					case Orbwalking.OrbwalkingMode.Combo:
+					case LXOrbwalker.Mode.Combo:
 						if(Program.Menu.Item("useW_TeamFight").GetValue<bool>())
 							CastW();
 						if(Program.Menu.Item("useR_TeamFight").GetValue<bool>())
@@ -87,13 +88,13 @@ namespace FedAllChampionsUtility
 
 		private void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
 		{
-			switch(Program.Orbwalker.ActiveMode)
+			switch(LXOrbwalker.CurrentMode)
 			{
-				case Orbwalking.OrbwalkingMode.Combo:
+				case LXOrbwalker.Mode.Combo:
 					if(Program.Menu.Item("useQ_TeamFight").GetValue<bool>())
 						CastQEnemy();
 					break;
-				case Orbwalking.OrbwalkingMode.Mixed:
+				case LXOrbwalker.Mode.Harass:
 					if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
 						CastQEnemy();
 					break;
@@ -145,8 +146,8 @@ namespace FedAllChampionsUtility
 		{
 			if(!W.IsReady() || Q.IsReady())
 				return;
-			var target = SimpleTs.GetTarget(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player) + 200, SimpleTs.DamageType.Physical);
-			if(target.Distance(ObjectManager.Player) >= Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
+			var target = SimpleTs.GetTarget(LXOrbwalker.GetAutoAttackRange(ObjectManager.Player) + 200, SimpleTs.DamageType.Physical);
+			if(target.Distance(ObjectManager.Player) >= LXOrbwalker.GetAutoAttackRange(ObjectManager.Player))
 				W.Cast();
 		}
 
