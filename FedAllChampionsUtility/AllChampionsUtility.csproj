@@ -64,8 +64,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Champions\Jungles\Elise.cs" />
     <Compile Include="Champions\Jungles\Sion.cs" />
     <Compile Include="Champions\Jungles\Vi.cs" />
+    <Compile Include="Champions\MidLines\Diana.cs" />
     <Compile Include="Champions\MidLines\Jayce.cs" />
     <Compile Include="Champions\MidLines\Orianna.cs" />
     <Compile Include="Champions\MidLines\Yasuo\Missle.cs" />
@@ -108,7 +110,6 @@
     <Compile Include="Chat.cs" />
     <Compile Include="Utilitys\DamageCalculator.cs" />
     <Compile Include="Champions\AdCarrys\Draven.cs" />
-    <Compile Include="Champions\Jungles\Elise.cs" />
     <Compile Include="Utilitys\Database.cs" />
     <Compile Include="Utilitys\DisconnectAlerter.cs" />
     <Compile Include="Utilitys\EnemmyRange.cs" />
