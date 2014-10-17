@@ -216,10 +216,7 @@ namespace FedAllChampionsUtility
             return true;
         }
     }
-
-    /// <summary>
-    /// Ward tracker tracks enemy wards and traps.
-    /// </summary>
+    
     internal class WardTracker
     {
         private static readonly List<WardData> PosibleWards = new List<WardData>();
@@ -380,9 +377,9 @@ namespace FedAllChampionsUtility
         internal static void AttachToMenu(Menu menu)
         {           
             var tempMenu2 = menu;
-            tempMenu2.AddItem(new MenuItem("tb_sep0", "====== Settings"));
-            tempMenu2.AddItem(new MenuItem("Details", "= Show more info").SetValue(new KeyBind(16, KeyBindType.Press)));
-            tempMenu2.AddItem(new MenuItem("Enabled", "= Enabled").SetValue(true));            
+            tempMenu2.AddItem(new MenuItem("tb_sep0", "====== Configs"));
+            tempMenu2.AddItem(new MenuItem("Details", "= Mostrar Range da Ward").SetValue(new KeyBind(16, KeyBindType.Press)));
+            tempMenu2.AddItem(new MenuItem("Enabled", "= Ativado").SetValue(true));            
             tempMenu2.AddItem(new MenuItem("tb_sep1", "========="));
             Program.Menu.AddSubMenu(tempMenu2);
 

@@ -11,8 +11,7 @@ namespace FedAllChampionsUtility
 		public const int LocalVersion = 68;
 		public static Champion Champion;
 		public static Menu Menu;
-		public static Orbwalking.Orbwalker Orbwalker;
-        public static Azir.Orbwalking.Orbwalker Azirwalker;
+		public static Orbwalking.Orbwalker Orbwalker;        
         public static Helper Helper;
         public static Map map;
         public static jJungleTimers jungler;
@@ -54,18 +53,9 @@ namespace FedAllChampionsUtility
                 SimpleTs.AddToMenu(targetSelectorMenu);
                 Menu.AddSubMenu(targetSelectorMenu);
 
-                if (ObjectManager.Player.ChampionName == "Azir")
-                {
-                    var orbwalking = Menu.AddSubMenu(new Menu("AzirWalking", "Orbwalking"));
-                    Azirwalker = new Azir.Orbwalking.Orbwalker(orbwalking);
-                    Menu.Item("FarmDelay").SetValue(new Slider(125, 100, 200));
-                }
-                else
-                {
-                    var orbwalking = Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+                var orbwalking = Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
                     Orbwalker = new Orbwalking.Orbwalker(orbwalking);
-                    Menu.Item("FarmDelay").SetValue(new Slider(0, 0, 200));
-                }
+                    Menu.Item("FarmDelay").SetValue(new Slider(0, 0, 200));               
                 
                 var skinchanger = new SkinChanger();
                 var disconect = new DisconnectAlerter();

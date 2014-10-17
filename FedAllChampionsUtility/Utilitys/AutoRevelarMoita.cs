@@ -28,11 +28,11 @@ namespace FedAllChampionsUtility
 
         public AutoRevelarMoita()
         {
-            _menu = Program.Menu.AddSubMenu(new Menu("Auto Bush Revealer", "AutoBushRevealer"));
-            _menu.AddItem(new MenuItem("AutoBushEnabled", "Enabled").SetValue(true));
-            _menu.AddItem(new MenuItem("AutoBushKey", "Key").SetValue(new KeyBind(Program.Menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press))); //32 == space
+            _menu = Program.Menu.AddSubMenu(new Menu("Revelar Moitas", "AutoBushRevealer"));
+            _menu.AddItem(new MenuItem("AutoBushEnabled", "Ativado").SetValue(true));
+            _menu.AddItem(new MenuItem("AutoBushKey", "Tecla").SetValue(new KeyBind(Program.Menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press))); //32 == space
 
-            var useWardsMenu = _menu.AddSubMenu(new Menu("Use Wards: ", "AutoBushUseWards"));
+            var useWardsMenu = _menu.AddSubMenu(new Menu("Usar Wards: ", "AutoBushUseWards"));
 
             foreach(var ward in _wards)
                 useWardsMenu.AddItem(new MenuItem("AutoBush" + ward.Key, ward.Value).SetValue(true));

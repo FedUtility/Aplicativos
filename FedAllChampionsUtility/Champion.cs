@@ -68,24 +68,14 @@ namespace FedAllChampionsUtility
             bool ismixed;
             bool islasthit;
             bool islaneclear;
-            if (ObjectManager.Player.ChampionName == "Azir")
-            {
-                ismixed = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.Mixed &&
-                          ManaManagerList.Contains("ManaManager_Harass");
-                islasthit = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LastHit &&
-                            ManaManagerList.Contains("ManaManager_LastHit");
-                islaneclear = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LaneClear &&
-                              ManaManagerList.Contains("ManaManager_LaneClear");
-            }
-            else
-            {
+            
                 ismixed = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed &&
                           ManaManagerList.Contains("ManaManager_Harass");
                 islasthit = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit &&
                             ManaManagerList.Contains("ManaManager_LastHit");
                 islaneclear = Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear &&
                               ManaManagerList.Contains("ManaManager_LaneClear");
-            }
+            
             if (ismixed)
             {
                 if ((int)ObjectManager.Player.Spellbook.GetSpell(spell.Slot).ManaCost <= 1)

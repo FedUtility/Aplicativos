@@ -19,17 +19,17 @@ namespace FedAllChampionsUtility
         public Revealer()
         {            
             Program.Menu.AddSubMenu(new Menu("Revealer", "Revealer"));
-            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("tb_sep0", "====== Settings"));
-            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("activemode", "= Active Mode: ").SetValue(new StringList(new[] { "Active", "Key" }, 0)));
-            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("active1", "= Enabled").SetValue(true));
-            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("active2", "= Enabled Key").SetValue(new KeyBind(32, KeyBindType.Press)));            
+            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("tb_sep0", "====== Configs"));
+            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("activemode", "= Modo Ativacao: ").SetValue(new StringList(new[] { "Automatico", "Tecla" }, 0)));
+            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("active1", "= Automatico").SetValue(true));
+            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("active2", "= Tecla").SetValue(new KeyBind(32, KeyBindType.Press)));            
 
             if (ObjectManager.Player.BaseSkinName == "LeeSin")
             {
-                Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("leeE", "Lee Sin: Use E").SetValue(true));
+                Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("leeE", "LeeSin: Usar E").SetValue(true));
                 E = new Spell(SpellSlot.E, 350f);
             }
-            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("tb_sep", "Revealer invisibles with a pink!"));
+            Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("tb_sep", "Revelar inimigos com Pink"));
             Program.Menu.SubMenu("Revealer").AddItem(new MenuItem("tb_sep1", "========="));
                         
             Game.OnGameUpdate += Game_OnGameUpdate;

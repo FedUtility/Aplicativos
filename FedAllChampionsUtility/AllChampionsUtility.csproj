@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Champions\Jungles\Sion.cs" />
     <Compile Include="Champions\Jungles\Vi.cs" />
+    <Compile Include="Champions\MidLines\Diana.cs" />
     <Compile Include="Champions\MidLines\Jayce.cs" />
     <Compile Include="Champions\MidLines\Orianna.cs" />
     <Compile Include="Champions\MidLines\Yasuo\Missle.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Champions\MidLines\Leblanc.cs" />
     <Compile Include="Champions\MidLines\TwistedFate.cs" />
     <Compile Include="Champions\MidLines\Yasuo\Yasuo.cs" />
-    <Compile Include="Champions\MidLines\Azir.cs" />
     <Compile Include="Champions\Support\Annie.cs" />
     <Compile Include="Champions\TopLines\DrMundo.cs" />
     <Compile Include="Champions\TopLines\Jax.cs" />
