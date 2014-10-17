@@ -90,15 +90,15 @@ namespace FedAllChampionsUtility
 		private void Start()
 		{
 			_potions = _potions.OrderBy(x => x.Priority).ToList();
-			Program.Menu.AddSubMenu(new Menu("Usar Pocoes", "PotionManager"));
+			Program.Menu.AddSubMenu(new Menu("PotionManager", "PotionManager"));
 
-			Program.Menu.SubMenu("PotionManager").AddSubMenu(new Menu("Vida", "Health"));
-			Program.Menu.SubMenu("PotionManager").SubMenu("Health").AddItem(new MenuItem("HealthPotion", "Usar Pocao de Vida").SetValue(true));
-			Program.Menu.SubMenu("PotionManager").SubMenu("Health").AddItem(new MenuItem("HealthPercent", "Vida %").SetValue(new Slider(30)));
+			Program.Menu.SubMenu("PotionManager").AddSubMenu(new Menu("Health", "Health"));
+			Program.Menu.SubMenu("PotionManager").SubMenu("Health").AddItem(new MenuItem("HealthPotion", "Use Health Potion").SetValue(true));
+			Program.Menu.SubMenu("PotionManager").SubMenu("Health").AddItem(new MenuItem("HealthPercent", "HP Trigger Percent").SetValue(new Slider(30)));
 
 			Program.Menu.SubMenu("PotionManager").AddSubMenu(new Menu("Mana", "Mana"));
-			Program.Menu.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPotion", "Usar Pocao de Mana").SetValue(true));
-			Program.Menu.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPercent", "Mana %").SetValue(new Slider(30)));
+			Program.Menu.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPotion", "Use Mana Potion").SetValue(true));
+			Program.Menu.SubMenu("PotionManager").SubMenu("Mana").AddItem(new MenuItem("ManaPercent", "MP Trigger Percent").SetValue(new Slider(30)));
 
 			Game.OnGameUpdate += OnGameUpdate;
 		}

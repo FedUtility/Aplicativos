@@ -25,10 +25,10 @@ namespace FedAllChampionsUtility
         internal static void AddtoMenu(Menu menu)
         {
             var tempMenu = menu;
-            tempMenu.AddItem(new MenuItem("tb_sep0", "====== Configs"));
-            tempMenu.AddItem(new MenuItem("tb_show_enemy", "= Mostrar Tracker Enimigos").SetValue(true));
-            tempMenu.AddItem(new MenuItem("tb_show_friend", "= Mostrar Tracker Aliados").SetValue(true));
-            tempMenu.AddItem(new MenuItem("tb_show_me", "= Mostrar minha Tracker").SetValue(true));
+            tempMenu.AddItem(new MenuItem("tb_sep0", "====== Settings"));
+            tempMenu.AddItem(new MenuItem("tb_show_enemy", "= Show Tracker Enemy").SetValue(true));
+            tempMenu.AddItem(new MenuItem("tb_show_friend", "= Show Tracker Friend").SetValue(true));
+            tempMenu.AddItem(new MenuItem("tb_show_me", "= Show Tracker Me").SetValue(true));
             tempMenu.AddItem(new MenuItem("tb_sep1", "========="));
             Program.Menu.AddSubMenu(tempMenu);
             

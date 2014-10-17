@@ -145,10 +145,10 @@ namespace FedAllChampionsUtility
 
 #endregion
 
-            _menu = Program.Menu.AddSubMenu(new Menu("Trocar Skins", "SkingChanger"));
-            _menu.AddItem(new MenuItem("SkingChanger", "Trocar Skins!").SetValue(new KeyBind(106, KeyBindType.Toggle)));
+            _menu = Program.Menu.AddSubMenu(new Menu("Skins Changer", "SkingChanger"));
+            _menu.AddItem(new MenuItem("SkingChanger", "Change Skin!").SetValue(new KeyBind(106, KeyBindType.Toggle)));
 
-            var ChangeSkin = _menu.AddItem(new MenuItem("SkingChanger", "Trocar Skins!").SetValue(new KeyBind(106, KeyBindType.Toggle)));
+            var ChangeSkin = _menu.AddItem(new MenuItem("SkingChanger", "Change Skin!").SetValue(new KeyBind(106, KeyBindType.Toggle)));
 
             ChangeSkin.ValueChanged += delegate(object sender, OnValueChangeEventArgs EventArgs)
             {

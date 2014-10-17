@@ -9,655 +9,272 @@ using MenuItem = LeagueSharp.Common.MenuItem;
 namespace FedAllChampionsUtility
 {
 	class Elise : Champion 
-	{       
-        private static bool _human;
-        private static bool _spider;
-        private static Spell _humanQ, _humanW, _humanE, _r, _spiderQ, _spiderW, _spiderE;
-        
-        private static SpellSlot _igniteSlot;
-        private static SpellDataInst _smiteSlot;
+	{
 
-        private static readonly float[] HumanQcd = { 6, 6, 6, 6, 6 };
-        private static readonly float[] HumanWcd = { 12, 12, 12, 12, 12 };
-        private static readonly float[] HumanEcd = { 14, 13, 12, 11, 10 };
-        private static readonly float[] SpiderQcd = { 6, 6, 6, 6, 6 };
-        private static readonly float[] SpiderWcd = { 12, 12, 12, 12, 12 };
-        private static readonly float[] SpiderEcd = { 26, 23, 20, 17, 14 };
-        private static float _humQcd = 0, _humWcd = 0, _humEcd = 0;
-        private static float _spidQcd = 0, _spidWcd = 0, _spidEcd = 0;
-        private static float _humaQcd = 0, _humaWcd = 0, _humaEcd = 0;
-        private static float _spideQcd = 0, _spideWcd = 0, _spideEcd = 0;
-        
+		public Spell QHuman;
+		public Spell WHuman;
+		public Spell EHuman;
+		public Spell QSpider;
+		public Spell WSpider;
+		public Spell ESpider;
+		public Spell R;
+
 		public Elise()
         {
 			LoadMenu();
 			LoadSpells();
 
-            AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
-            Interrupter.OnPossibleToInterrupt += Interrupter_OnPosibleToInterrupt;
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-            Game.OnGameUpdate += Game_OnGameUpdate;
-            Drawing.OnDraw += Drawing_OnDraw;
-
+			Drawing.OnDraw += Drawing_OnDraw;
+			Game.OnGameUpdate += Game_OnGameUpdate;
 			PluginLoaded();
 		}
 
 		private void LoadMenu()
 		{
-            //Combo
-            Program.Menu.AddSubMenu(new Menu("Combo", "Combo"));
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseHumanQ", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseHumanW", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseHumanE", "Human E")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Auto use R")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseSpiderQ", "Spider Q")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseSpiderW", "Spider W")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseSpiderE", "Spider E")).SetValue(true);
-            Program.Menu.SubMenu("Combo").AddItem(new MenuItem("ActiveCombo", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
 
-            //Harass
-            Program.Menu.AddSubMenu(new Menu("Harass", "Harass"));
-            Program.Menu.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Harass").AddItem(new MenuItem("UseWHarass", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Harass").AddItem(new MenuItem("Harrasmana", "Minimum Mana").SetValue(new Slider(50, 1, 100)));
-            Program.Menu.SubMenu("Harass").AddItem(new MenuItem("ActiveHarass", "Harass key").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
+			Program.Menu.AddSubMenu(new Menu("TeamFight", "TeamFight"));
+			Program.Menu.SubMenu("TeamFight").AddItem(new MenuItem("Sorry", "Sorry cant let you"));
+			Program.Menu.SubMenu("TeamFight").AddItem(new MenuItem("Sorry1", "disable spells :P"));
+			
+			Program.Menu.AddSubMenu(new Menu("Harass", "Harass"));
+			Program.Menu.SubMenu("Harass").AddItem(new MenuItem("useQ_Harass", "Use Q Human").SetValue(true));
+			Program.Menu.SubMenu("Harass").AddItem(new MenuItem("useW_Harass", "Use W Human").SetValue(true));
+			Program.Menu.SubMenu("Harass").AddItem(new MenuItem("useE_Harass", "Use E Human").SetValue(true));
+			AddManaManager("Harass",40);
 
-            //Farm
-            Program.Menu.AddSubMenu(new Menu("Farm", "Farm"));
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("HumanQFarm", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("HumanWFarm", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("SpiderQFarm", "Spider Q")).SetValue(false);
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("SpiderWFarm", "Spider W")).SetValue(true);
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("Farm_R", "Auto Switch(toggle)").SetValue(new KeyBind("G".ToCharArray()[0], KeyBindType.Toggle)));
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("ActiveFreeze", "Freeze Lane").SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("ClearActive", "Clear Lane").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-            Program.Menu.SubMenu("Farm").AddItem(new MenuItem("Lanemana", "Minimum Mana").SetValue(new Slider(60, 1, 100)));
+			Program.Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useQ_LaneClear", "Use Q Human").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useW_LaneClear", "Use W Human").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useE_LaneClear", "Use E Human").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useQ_LaneClear2", "Use Q Spider").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useW_LaneClear2", "Use W Spider").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useE_LaneClear2", "Use E Spider").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("LaneClear_forms", "Switch Forms").SetValue(true));
+			Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("LaneClear_mana", "Use Spider below Mana").SetValue(new Slider(40)));
 
-            //Farm
-            Program.Menu.AddSubMenu(new Menu("Jungle", "Jungle"));
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("HumanQFarmJ", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("HumanWFarmJ", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("SpiderQFarmJ", "Spider Q")).SetValue(false);
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("SpiderWFarmJ", "Spider W")).SetValue(true);
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("smite", "Auto Smite").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("ActiveJungle", "Jungle").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("Junglemana", "Minimum Mana").SetValue(new Slider(40, 1, 100)));
-
-            //misc
-            Program.Menu.AddSubMenu(new Menu("Misc", "Misc"));            
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("Spidergapcloser", "SpiderE to GapCloser")).SetValue(true);
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("Humangapcloser", "HumanE to GapCloser")).SetValue(true);
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("UseEInt", "HumanE to Interrupt")).SetValue(true);
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("smite", "Auto Smite").SetValue(true));
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("autoE", "HUmanE with VeryHigh Use").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
-            Program.Menu.SubMenu("Misc")
-                                   .AddItem(new MenuItem("Echange", "E Hit").SetValue(
-                                    new StringList(new[] { "Low", "Medium", "High", "Very High" })));
-
-
-
-            //Kill Steal
-            Program.Menu.AddSubMenu(new Menu("KillSteal", "Ks"));
-            Program.Menu.SubMenu("Ks").AddItem(new MenuItem("ActiveKs", "Use KillSteal")).SetValue(true);
-            Program.Menu.SubMenu("Ks").AddItem(new MenuItem("HumanQKs", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Ks").AddItem(new MenuItem("HumanWKs", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Ks").AddItem(new MenuItem("SpiderQKs", "Spider Q")).SetValue(true);
-            Program.Menu.SubMenu("Ks").AddItem(new MenuItem("UseIgnite", "Use Ignite")).SetValue(true);
-
-
-            //Drawings
-            Program.Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawQ", "Human Q")).SetValue(true);
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawW", "Human W")).SetValue(true);
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("DrawE", "Human E")).SetValue(true);
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("SpiderDrawQ", "Spider Q")).SetValue(true);
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("SpiderDrawE", "Spider E")).SetValue(true);
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("CircleLag", "Lag Free Circles").SetValue(true));
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("CircleQuality", "Circles Quality").SetValue(new Slider(100, 100, 10)));
-            Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("CircleThickness", "Circles Thickness").SetValue(new Slider(1, 10, 1)));			
+			Program.Menu.AddSubMenu(new Menu("Drawing", "Drawing"));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_Q_Human", "Draw Q Human").SetValue(true));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_W_Human", "Draw W Human").SetValue(true));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_E_Human", "Draw E Human").SetValue(true));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_Q_Spider", "Draw Q Spider").SetValue(true));
+			Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_E_Spider", "Draw E Spider").SetValue(true));
 		}
 
 		private void LoadSpells()
 		{
-            _humanQ = new Spell(SpellSlot.Q, 625f);
-            _humanW = new Spell(SpellSlot.W, 950f);
-            _humanE = new Spell(SpellSlot.E, 1075f);
-            _spiderQ = new Spell(SpellSlot.Q, 475f);
-            _spiderW = new Spell(SpellSlot.W, 0);
-            _spiderE = new Spell(SpellSlot.E, 750f);
-            _r = new Spell(SpellSlot.R, 0);
+			QHuman = new Spell(SpellSlot.Q, 625);
 
-            _humanW.SetSkillshot(0.25f, 100f, 1000, true, SkillshotType.SkillshotLine);
-            _humanE.SetSkillshot(0.25f, 55f, 1300, true, SkillshotType.SkillshotLine);
+			WHuman = new Spell(SpellSlot.W, 950);
+			WHuman.SetSkillshot(0.3f, 10, float.MaxValue, true, SkillshotType.SkillshotLine);
 
-            //DFG = new Items.Item(3128, 750f);
+			EHuman = new Spell(SpellSlot.E, 1075);
+			EHuman.SetSkillshot(0.25f, 70, float.MaxValue, true, SkillshotType.SkillshotLine);
 
-            _igniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
-            _smiteSlot = ObjectManager.Player.SummonerSpellbook.GetSpell(ObjectManager.Player.GetSpellSlot("summonersmite"));			
+			QSpider = new Spell(SpellSlot.Q,475);
+
+			WSpider = new Spell(SpellSlot.W);
+
+			ESpider = new Spell(SpellSlot.E, 1000);
+			
+			R = new Spell(SpellSlot.R);
 		}
 
-        private void Game_OnGameUpdate(EventArgs args)
-        {
-            Cooldowns();           
+		private void Game_OnGameUpdate(EventArgs args)
+		{		
+			switch(Program.Orbwalker.ActiveMode)
+			{
+				case Orbwalking.OrbwalkingMode.Combo:
+					Combo();
+					break;
+				case Orbwalking.OrbwalkingMode.Mixed:
+					Harass();
+					break;
+				case Orbwalking.OrbwalkingMode.LaneClear:
+					LaneClear();
+					break;
+			}
+		}
 
-            Program.Orbwalker.SetAttack(true);
+		private void Drawing_OnDraw(EventArgs args)
+		{
+		
+			if(Program.Menu.Item("Draw_Disabled").GetValue<bool>())
+				return;
 
-            CheckSpells();
+			if(Humanform())
+			{
+				if(Program.Menu.Item("Draw_Q_Human").GetValue<bool>())
+					if(QHuman.Level > 0)
+						Utility.DrawCircle(ObjectManager.Player.Position, QHuman.Range, QHuman.IsReady() ? Color.Green : Color.Red);
 
-            if (Program.Menu.Item("ActiveFreeze").GetValue<KeyBind>().Active ||
-                Program.Menu.Item("ClearActive").GetValue<KeyBind>().Active)
+				if(Program.Menu.Item("Draw_W_Human").GetValue<bool>())
+					if(WHuman.Level > 0)
+						Utility.DrawCircle(ObjectManager.Player.Position, WHuman.Range, WHuman.IsReady() ? Color.Green : Color.Red);
 
-                FarmLane();
+				if(Program.Menu.Item("Draw_E_Human").GetValue<bool>())
+					if(EHuman.Level > 0)
+						Utility.DrawCircle(ObjectManager.Player.Position, EHuman.Range, EHuman.IsReady() ? Color.Green : Color.Red);
 
-            if (Program.Menu.Item("ActiveJungle").GetValue<KeyBind>().Active)
-            {
-                JungleFarm();
+			}
+			else
+			{
+				if(Program.Menu.Item("Draw_Q_Spider").GetValue<bool>())
+					if(QSpider.Level > 0)
+						Utility.DrawCircle(ObjectManager.Player.Position, QSpider.Range, QSpider.IsReady() ? Color.Green : Color.Red);
 
-            }
-            if (Program.Menu.Item("ActiveCombo").GetValue<KeyBind>().Active)
-            {
-                Combo();
-            }
-            if (Program.Menu.Item("ActiveHarass").GetValue<KeyBind>().Active)
-            {
-                Harass();
+				if(Program.Menu.Item("Draw_E_Spider").GetValue<bool>())
+					if(ESpider.Level > 0)
+						Utility.DrawCircle(ObjectManager.Player.Position, ESpider.Range, ESpider.IsReady() ? Color.Green : Color.Red);
+			}
+		}
 
-            }
-            if (Program.Menu.Item("ActiveKs").GetValue<bool>())
-            {
-                KillSteal();
-            }
-            if (Program.Menu.Item("autoE").GetValue<KeyBind>().Active)
-            {
-                AutoE();
+		private void LaneClear()
+		{
+			var justSpider = Program.Menu.Item("LaneClear_mana").GetValue<Slider>().Value >=
+			                 ObjectManager.Player.Mana/ObjectManager.Player.MaxMana*100;
 
-            }
-        }
-        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (sender.IsMe)
-                //Game.PrintChat("Spell name: " + args.SData.Name.ToString());
-                GetCDs(args);
-        }
+			if (justSpider)
+				Switchto("Spider");
 
-        private void Combo()
-        {
-            var target = SimpleTs.GetTarget(_humanW.Range, SimpleTs.DamageType.Magical);
-            var sReady = (_smiteSlot != null && _smiteSlot.Slot != SpellSlot.Unknown && _smiteSlot.State == SpellState.Ready);
-            var qdmg = ObjectManager.Player.GetSpellDamage(target, SpellSlot.Q);
-            var wdmg = ObjectManager.Player.GetSpellDamage(target, SpellSlot.W);
-            if (target == null) return; //buffelisecocoon
-            if (_human)
-            {
-                if (target.Distance(ObjectManager.Player.Position) < _humanE.Range && Program.Menu.Item("UseHumanE").GetValue<bool>() && _humanE.IsReady())
-                {
-                    if (sReady && Program.Menu.Item("smite").GetValue<bool>() &&
-                        _humanE.GetPrediction(target).CollisionObjects.Count == 1)
-                    {
-                        CheckingCollision(target);
-                        _humanE.Cast(target, Packets());
-                    }
-                    else if (_humanE.GetPrediction(target).Hitchance >= Echange())
-                    {
-                        _humanE.Cast(target, Packets());
-                    }
-                }
+			if(Humanform())
+			{
+				if (Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
+					Cast_Basic_Farm(QHuman);
+				if(Program.Menu.Item("useW_LaneClear").GetValue<bool>())
+					Cast_Basic_Farm(WHuman,true );
+				if(Program.Menu.Item("useE_LaneClear").GetValue<bool>())
+					Cast_Basic_Farm(EHuman, true);
+				if(Program.Menu.Item("LaneClear_forms").GetValue<bool>())
+					if ( (Program.Menu.Item("useQ_LaneClear").GetValue<bool>() && !QHuman.IsReady()) ||
+						(Program.Menu.Item("useW_LaneClear").GetValue<bool>() && !WHuman.IsReady()) ||
+						(Program.Menu.Item("useE_LaneClear").GetValue<bool>() && !EHuman.IsReady()) )
+						Switchto("Spider");
+			}
+			else
+			{
+				if(Program.Menu.Item("useQ_LaneClear").GetValue<bool>())
+					Cast_Basic_Farm(QSpider );
+				if(Program.Menu.Item("useE_LaneClear").GetValue<bool>())
+					Cast_Basic_Farm(ESpider);
+				if(Program.Menu.Item("useW_LaneClear").GetValue<bool>())
+					if (
+						MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
+							Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), MinionTypes.All, MinionTeam.NotAlly,
+							MinionOrderTypes.MaxHealth).Count >= 1)
+						WSpider.Cast();
+				if(MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 400, MinionTypes.All, MinionTeam.Ally).All(spider => spider.Name != "Spiderling") && !justSpider)
+					Switchto("Human");
+			}
 
-                if (ObjectManager.Player.Distance(target) <= _humanQ.Range && Program.Menu.Item("UseHumanQ").GetValue<bool>() && _humanQ.IsReady())
-                {
-                    _humanQ.Cast(target, Packets());
-                }
-                if (ObjectManager.Player.Distance(target) <= _humanW.Range && Program.Menu.Item("UseHumanW").GetValue<bool>() && _humanW.IsReady())
-                {
-                    _humanW.Cast(target, Packets());
-                }
-                if (!_humanQ.IsReady() && !_humanW.IsReady() && !_humanE.IsReady() && Program.Menu.Item("UseRCombo").GetValue<bool>() && _r.IsReady())
-                {
-                    _r.Cast();
-                }
-                if (!_humanQ.IsReady() && !_humanW.IsReady() && ObjectManager.Player.Distance(target) <= _spiderQ.Range && Program.Menu.Item("UseRCombo").GetValue<bool>() && _r.IsReady())
-                {
-                    _r.Cast();
-                }
-            }
-            if (!_spider) return;
-            if (ObjectManager.Player.Distance(target) <= _spiderQ.Range && Program.Menu.Item("UseSpiderQ").GetValue<bool>() && _spiderQ.IsReady())
-            {
-                _spiderQ.Cast(target, Packets());
-            }
-            if (ObjectManager.Player.Distance(target) <= 200 && Program.Menu.Item("UseSpiderW").GetValue<bool>() && _spiderW.IsReady())
-            {
-                _spiderW.Cast();
-            }
-            if (ObjectManager.Player.Distance(target) <= _spiderE.Range && ObjectManager.Player.Distance(target) > _spiderQ.Range && Program.Menu.Item("UseSpiderE").GetValue<bool>() && _spiderE.IsReady() && !_spiderQ.IsReady())
-            {
-                _spiderE.Cast(target, Packets());
-            }
-            if (ObjectManager.Player.Distance(target) > _spiderQ.Range && !_spiderE.IsReady() && _r.IsReady() && !_spiderQ.IsReady() && Program.Menu.Item("UseRCombo").GetValue<bool>())
-            {
-                _r.Cast();
-            }
-            if (_humanQ.IsReady() && _humanW.IsReady() && _r.IsReady() && Program.Menu.Item("UseRCombo").GetValue<bool>())
-            {
-                _r.Cast();
-            }
-            if (_humanQ.IsReady() && _humanW.IsReady() && _r.IsReady() && Program.Menu.Item("UseRCombo").GetValue<bool>())
-            {
-                _r.Cast();
-            }
-            if ((_humanQ.IsReady() && qdmg >= target.Health || _humanW.IsReady() && wdmg >= target.Health) && Program.Menu.Item("UseRCombo").GetValue<bool>())
-            {
-                _r.Cast();
-            }
-        }
+		}
 
-        private void Harass()
-        {
-            var target = SimpleTs.GetTarget(_humanQ.Range, SimpleTs.DamageType.Magical);
-            if (target != null)
-            {
+		private void Harass()
+		{
+			if(Program.Menu.Item("useQ_Harass").GetValue<bool>())
+			CastQHuman();
+			if(Program.Menu.Item("useW_Harass").GetValue<bool>())
+			CastEHuman();
+			if(Program.Menu.Item("useE_Harass").GetValue<bool>())
+			CastWHuman();
+		}
 
-                if (_human && ObjectManager.Player.Distance(target) <= _humanQ.Range && Program.Menu.Item("UseQHarass").GetValue<bool>() && _humanQ.IsReady())
-                {
-                    _humanQ.Cast(target, Packets());
-                }
+		private void Combo()
+		{
 
-                if (_human && ObjectManager.Player.Distance(target) <= _humanW.Range && Program.Menu.Item("UseWHarass").GetValue<bool>() && _humanW.IsReady())
-                {
-                    _humanW.Cast(target, Packets());
-                }
-            }
-        }
+			if (Humanform())
+			{
+				CastQHuman();
+				CastEHuman();
+				CastWHuman();
+				if (!(QHuman.IsReady() || WHuman.IsReady() || EHuman.IsReady()))
+					Switchto("Spider");
+			}
+			else
+			{
+				CastESpider();
+				CastQSpider();
+				CastWSpider();
+				CheckSwitchtoHuman();				
+			}
+		}
 
-        private void JungleFarm()
-        {
-            var jungleQ = (Program.Menu.Item("HumanQFarmJ").GetValue<bool>() && (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) > Program.Menu.Item("Junglemana").GetValue<Slider>().Value);
-            var jungleW = (Program.Menu.Item("HumanWFarmJ").GetValue<bool>() && (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) > Program.Menu.Item("Junglemana").GetValue<Slider>().Value);
-            var spiderjungleQ = Program.Menu.Item("SpiderQFarmJ").GetValue<bool>();
-            var spiderjungleW = Program.Menu.Item("SpiderWFarmJ").GetValue<bool>();
-            var switchR = (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) < Program.Menu.Item("Junglemana").GetValue<Slider>().Value;
-            var mobs = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _humanQ.Range,
-            MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
-            if (mobs.Count > 0)
-            {
-                foreach (var minion in mobs)
-                    if (_human)
-                    {
-                        if (jungleQ && _humanQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanQ.Range)
-                        {
-                            _humanQ.Cast(minion, Packets());
-                        }
-                        if (jungleW && _humanW.IsReady() && !_humanQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanW.Range)
-                        {
-                            _humanW.Cast(minion, Packets());
-                        }
-                        if ((!_humanQ.IsReady() && !_humanW.IsReady()) || switchR)
-                        {
-                            _r.Cast();
-                        }
-                    }
-                foreach (var minion in mobs)
-                {
-                    if (_spider)
-                    {
-                        if (spiderjungleQ && _spiderQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _spiderQ.Range)
-                        {
-                            _spiderQ.Cast(minion, Packets());
-                        }
-                        if (spiderjungleW && _spiderW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= 150)
-                        {
-                            Program.Orbwalker.SetAttack(true);
-                            _spiderW.Cast();
-                        }
-                        if (_r.IsReady() && _humanQ.IsReady() && !_spiderQ.IsReady() && !_spiderW.IsReady() && _spider)
-                        {
-                            _r.Cast();
-                        }
-                    }
-                }
-            }
-        }
+		private void CheckSwitchtoHuman()
+		{
+			if (WSpider.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(QSpider.Range, SimpleTs.DamageType.Magical);	
+			if (target == null)
+				Switchto("Human");
+		}
 
-        private void FarmLane()
-        {
-            var ManaUse = (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) > Program.Menu.Item("Lanemana").GetValue<Slider>().Value;
-            var useR = Program.Menu.Item("Farm_R").GetValue<KeyBind>().Active;
-            var useHumQ = (Program.Menu.Item("HumanQFarm").GetValue<bool>() && (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) > Program.Menu.Item("Lanemana").GetValue<Slider>().Value);
-            var useHumW = (Program.Menu.Item("HumanWFarm").GetValue<bool>() && (100 * (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana)) > Program.Menu.Item("Lanemana").GetValue<Slider>().Value);
-            var useSpiQFarm = (_spiderQ.IsReady() && Program.Menu.Item("SpiderQFarm").GetValue<bool>());
-            var useSpiWFarm = (_spiderW.IsReady() && Program.Menu.Item("SpiderWFarm").GetValue<bool>());
-            var allminions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _humanQ.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.Health);
-            {
-                if (Program.Menu.Item("ClearActive").GetValue<KeyBind>().Active)
-                {
-                    foreach (var minion in allminions)
-                        if (_human)
-                        {
-                            if (useHumQ && _humanQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanQ.Range)
-                            {
-                                _humanQ.Cast(minion);
-                            }
-                            if (useHumW && _humanW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanW.Range)
-                            {
-                                _humanW.Cast(minion);
-                            }
-                            if (useR && _r.IsReady())
-                            {
-                                _r.Cast();
-                            }
-                        }
-                    foreach (var minion in allminions)
-                        if (_spider)
-                        {
-                            if (useSpiQFarm && _spiderQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _spiderQ.Range)
-                            {
-                                _spiderQ.Cast(minion);
-                            }
-                            if (useSpiWFarm && _spiderW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= 125)
-                            {
-                                _spiderW.Cast();
-                            }
-                        }
-                }
-                if (Program.Menu.Item("ActiveFreeze").GetValue<KeyBind>().Active)
-                {
-                    foreach (var minion in allminions)
-                        if (_human)
-                        {
-                            if (useHumQ && ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) > minion.Health && _humanQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanQ.Range)
-                            {
-                                _humanQ.Cast(minion);
-                            }
-                            if (useHumW && ObjectManager.Player.GetSpellDamage(minion, SpellSlot.W) > minion.Health && _humanW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _humanW.Range)
-                            {
-                                _humanW.Cast(minion);
-                            }
-                            if (useR && _r.IsReady())
-                            {
-                                _r.Cast();
-                            }
-                        }
-                    foreach (var minion in allminions)
-                        if (_spider)
-                        {
-                            if (useSpiQFarm && _spiderQ.IsReady() && ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) > minion.Health && _spiderQ.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= _spiderQ.Range)
-                            {
-                                _spiderQ.Cast(minion);
-                            }
-                            if (useSpiQFarm && _spiderW.IsReady() && minion.IsValidTarget() && ObjectManager.Player.Distance(minion) <= 125)
-                            {
-                                _spiderW.Cast();
-                            }
-                        }
-                }
-            }
-        }
-        private void AutoE()
-        {
-            var target = SimpleTs.GetTarget(_humanE.Range, SimpleTs.DamageType.Magical);
+		private void CastWSpider()
+		{
+			var target = SimpleTs.GetTarget(Orbwalking.GetRealAutoAttackRange(ObjectManager.Player), SimpleTs.DamageType.Magical);
+			if (target.IsValidTarget())
+				WSpider.Cast();
+		}
 
-            if (_human && ObjectManager.Player.Distance(target) < _humanE.Range && _humanE.IsReady() && _humanE.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
-            {
-                _humanE.Cast(target, Packets());
-            }
-        }  
+		private void CastQSpider()
+		{
+			if(!QSpider.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(QSpider.Range, SimpleTs.DamageType.Magical);
+			QSpider.Cast(target, Packets());
+		}
 
-        private void Interrupter_OnPosibleToInterrupt(Obj_AI_Base target, InterruptableSpell spell)
-        {
-            if (!Program.Menu.Item("UseEInt").GetValue<bool>()) return;
-            if (ObjectManager.Player.Distance(target) < _humanE.Range && target != null && _humanE.GetPrediction(target).Hitchance >= HitChance.Low)
-            {
-                _humanE.Cast(target, Packets());
-            }
-        }
+		private void CastESpider()
+		{
+			if(!ESpider.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(ESpider.Range, SimpleTs.DamageType.Magical);
+			if (target.IsValidTarget(ESpider.Range) && !target.IsValidTarget(QSpider.Range))
+				ESpider.Cast(target, Packets());
+		}
 
-        private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
-        {
-            if (_spiderE.IsReady() && _spider && gapcloser.Sender.IsValidTarget(_spiderE.Range) && Program.Menu.Item("Spidergapcloser").GetValue<bool>())
-            {
-                _spiderE.Cast(gapcloser.Sender, Packets());
-            }
-            if (_humanE.IsReady() && _human && gapcloser.Sender.IsValidTarget(_humanE.Range) && Program.Menu.Item("Humangapcloser").GetValue<bool>())
-            {
-                _humanE.Cast(gapcloser.Sender, Packets());
-            }
-        }
+		private void Switchto(string p)
+		{
+			if(!R.IsReady())
+				return;
+			if (p == "Spider" && Humanform())
+				R.Cast();
+			else if (p == "Human" && !Humanform())
+				R.Cast();
+		}
+		
 
-        private float CalculateCd(float time)
-        {
-            return time + (time * ObjectManager.Player.PercentCooldownMod);
-        }
+		private void CastEHuman()
+		{
+			if(!EHuman.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(EHuman.Range, SimpleTs.DamageType.Magical);
+			if(EHuman.GetPrediction(target).Hitchance >= HitChance.High)
+				EHuman.Cast(target, Packets());
+		}
 
-        private void Cooldowns()
-        {
-            _humaQcd = ((_humQcd - Game.Time) > 0) ? (_humQcd - Game.Time) : 0;
-            _humaWcd = ((_humWcd - Game.Time) > 0) ? (_humWcd - Game.Time) : 0;
-            _humaEcd = ((_humEcd - Game.Time) > 0) ? (_humEcd - Game.Time) : 0;
-            _spideQcd = ((_spidQcd - Game.Time) > 0) ? (_spidQcd - Game.Time) : 0;
-            _spideWcd = ((_spidWcd - Game.Time) > 0) ? (_spidWcd - Game.Time) : 0;
-            _spideEcd = ((_spidEcd - Game.Time) > 0) ? (_spidEcd - Game.Time) : 0;
-        }
+		private void CastWHuman()
+		{
+			if(!WHuman.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(WHuman.Range, SimpleTs.DamageType.Magical);
+			if (WHuman.GetPrediction(target).Hitchance >= HitChance.High )
+				WHuman.Cast(target, Packets());
+		}
 
-        private void GetCDs(GameObjectProcessSpellCastEventArgs spell)
-        {
-            if (_human)
-            {
-                if (spell.SData.Name == "EliseHumanQ")
-                    _humQcd = Game.Time + CalculateCd(HumanQcd[_humanQ.Level]);
-                if (spell.SData.Name == "EliseHumanW")
-                    _humWcd = Game.Time + CalculateCd(HumanWcd[_humanW.Level]);
-                if (spell.SData.Name == "EliseHumanE")
-                    _humEcd = Game.Time + CalculateCd(HumanEcd[_humanE.Level]);
-            }
-            else
-            {
-                if (spell.SData.Name == "EliseSpiderQCast")
-                    _spidQcd = Game.Time + CalculateCd(SpiderQcd[_spiderQ.Level]);
-                if (spell.SData.Name == "EliseSpiderW")
-                    _spidWcd = Game.Time + CalculateCd(SpiderWcd[_spiderW.Level]);
-                if (spell.SData.Name == "EliseSpiderEInitial")
-                    _spidEcd = Game.Time + CalculateCd(SpiderEcd[_spiderE.Level]);
-            }
-        }
+		private void CastQHuman()
+		{
+			if (!QHuman.IsReady())
+				return;
+			var target = SimpleTs.GetTarget(QHuman.Range, SimpleTs.DamageType.Magical );
+			QHuman.Cast(target, Packets());
+		}
 
-        private HitChance Echange()
-        {
-            switch (Program.Menu.Item("Echange").GetValue<StringList>().SelectedIndex)
-            {
-                case 0:
-                    return HitChance.Low;
-                case 1:
-                    return HitChance.Medium;
-                case 2:
-                    return HitChance.High;
-                case 3:
-                    return HitChance.VeryHigh;
-                default:
-                    return HitChance.Medium;
-            }
-        }
-        // Credits to Brain0305
-        private bool CheckingCollision(Obj_AI_Hero target)
-        {
-            foreach (var col in MinionManager.GetMinions(ObjectManager.Player.Position, 1500, MinionTypes.All, MinionTeam.NotAlly))
-            {
-                var segment = Geometry.ProjectOn(col.ServerPosition.To2D(), ObjectManager.Player.ServerPosition.To2D(),
-                    col.Position.To2D());
-                if (segment.IsOnSegment &&
-                    target.ServerPosition.To2D().Distance(segment.SegmentPoint) <= GetHitBox(col) + 40)
-                {
-                    if (col.IsValidTarget(_smiteSlot.SData.CastRange[0]) &&
-                        col.Health < ObjectManager.Player.GetSummonerSpellDamage(col, Damage.SummonerSpell.Smite))
-                    {
-                        ObjectManager.Player.SummonerSpellbook.CastSpell(_smiteSlot.Slot, col);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        // Credits to Brain0305
-        private float GetHitBox(Obj_AI_Base minion)
-        {
-            var nameMinion = minion.Name.ToLower();
-            if (nameMinion.Contains("mech")) return 65;
-            if (nameMinion.Contains("wizard") || nameMinion.Contains("basic")) return 48;
-            if (nameMinion.Contains("wolf") || nameMinion.Contains("wraith")) return 50;
-            if (nameMinion.Contains("golem") || nameMinion.Contains("lizard")) return 80;
-            if (nameMinion.Contains("dragon") || nameMinion.Contains("worm")) return 100;
-            return 50;
-        }
 
-        private void KillSteal()
-        {
-            var target = SimpleTs.GetTarget(_humanQ.Range, SimpleTs.DamageType.Magical);
-            var igniteDmg = ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
-            var qhDmg = ObjectManager.Player.GetSpellDamage(target, SpellSlot.Q);
-            var wDmg = ObjectManager.Player.GetSpellDamage(target, SpellSlot.W);
+		private bool Humanform()
+		{
+		
 
-            if (target != null && Program.Menu.Item("UseIgnite").GetValue<bool>() && _igniteSlot != SpellSlot.Unknown &&
-            ObjectManager.Player.SummonerSpellbook.CanUseSpell(_igniteSlot) == SpellState.Ready)
-            {
-                if (igniteDmg > target.Health)
-                {
-                    ObjectManager.Player.SummonerSpellbook.CastSpell(_igniteSlot, target);
-                }
-            }
-            if (_human)
-            {
-                if (_humanQ.IsReady() && ObjectManager.Player.Distance(target) <= _humanQ.Range && target != null && Program.Menu.Item("HumanQKs").GetValue<bool>())
-                {
-                    if (target.Health <= qhDmg)
-                    {
-                        _humanQ.Cast(target);
-                    }
-                }
-                if (_humanW.IsReady() && ObjectManager.Player.Distance(target) <= _humanW.Range && target != null && Program.Menu.Item("HumanWKs").GetValue<bool>())
-                {
-                    if (target.Health <= wDmg)
-                    {
-                        _humanW.Cast(target);
-                    }
-                }
-            }
-            if (_spider && _spiderQ.IsReady() && ObjectManager.Player.Distance(target) <= _spiderQ.Range && target != null && Program.Menu.Item("SpiderQKs").GetValue<bool>())
-            {
-                if (target.Health <= qhDmg)
-                {
-                    _spiderQ.Cast(target);
-                }
-            }
-        }
-
-        private void Drawing_OnDraw(EventArgs args)
-        {
-            var elise = Drawing.WorldToScreen(ObjectManager.Player.Position);
-
-            if (Program.Menu.Item("CircleLag").GetValue<bool>())
-            {
-                if (_human && Program.Menu.Item("DrawQ").GetValue<bool>())
-                {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _humanQ.Range, System.Drawing.Color.LightGray,
-                        Program.Menu.Item("CircleThickness").GetValue<Slider>().Value,
-                        Program.Menu.Item("CircleQuality").GetValue<Slider>().Value);
-                }
-                if (_human && Program.Menu.Item("DrawW").GetValue<bool>())
-                {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _humanW.Range, System.Drawing.Color.LightGray,
-                        Program.Menu.Item("CircleThickness").GetValue<Slider>().Value,
-                        Program.Menu.Item("CircleQuality").GetValue<Slider>().Value);
-                }
-                if (_human && Program.Menu.Item("DrawE").GetValue<bool>())
-                {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _humanE.Range, System.Drawing.Color.LightGray,
-                        Program.Menu.Item("CircleThickness").GetValue<Slider>().Value,
-                        Program.Menu.Item("CircleQuality").GetValue<Slider>().Value);
-                }
-                if (_spider && Program.Menu.Item("SpiderDrawQ").GetValue<bool>())
-                {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _spiderQ.Range, System.Drawing.Color.LightGray,
-                        Program.Menu.Item("CircleThickness").GetValue<Slider>().Value,
-                        Program.Menu.Item("CircleQuality").GetValue<Slider>().Value);
-                }
-                if (_spider && Program.Menu.Item("SpiderDrawE").GetValue<bool>())
-                {
-                    Utility.DrawCircle(ObjectManager.Player.Position, _spiderE.Range, System.Drawing.Color.LightGray,
-                   Program.Menu.Item("CircleThickness").GetValue<Slider>().Value,
-                   Program.Menu.Item("CircleQuality").GetValue<Slider>().Value);
-                }
-            }
-            else
-            {
-                if (_human && Program.Menu.Item("DrawQ").GetValue<bool>())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, _humanQ.Range, System.Drawing.Color.LightGray);
-                }
-                if (_human && Program.Menu.Item("DrawW").GetValue<bool>())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, _humanW.Range, System.Drawing.Color.LightGray);
-                }
-                if (_human && Program.Menu.Item("DrawE").GetValue<bool>())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, _humanE.Range, System.Drawing.Color.LightGray);
-                }
-                if (_spider && Program.Menu.Item("SpiderDrawQ").GetValue<bool>())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, _spiderQ.Range, System.Drawing.Color.LightGray);
-                }
-                if (_spider && Program.Menu.Item("SpiderDrawE").GetValue<bool>())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, _spiderE.Range, System.Drawing.Color.LightGray);
-                }
-            }
-            if (!_spider)
-            {
-                if (_spideQcd == 0)
-                    Drawing.DrawText(elise[0] - 60, elise[1], Color.White, "SQ Rdy");
-                else
-                    Drawing.DrawText(elise[0] - 60, elise[1], Color.Orange, "SQ: " + _spideQcd.ToString("0.0"));
-                if (_spideWcd == 0)
-                    Drawing.DrawText(elise[0] - 20, elise[1] + 30, Color.White, "SW Rdy");
-                else
-                    Drawing.DrawText(elise[0] - 20, elise[1] + 30, Color.Orange, "SW: " + _spideWcd.ToString("0.0"));
-                if (_spideEcd == 0)
-                    Drawing.DrawText(elise[0], elise[1], Color.White, "SE Rdy");
-                else
-                    Drawing.DrawText(elise[0], elise[1], Color.Orange, "SE: " + _spideEcd.ToString("0.0"));
-            }
-            else
-            {
-                if (_humaQcd == 0)
-                    Drawing.DrawText(elise[0] - 60, elise[1], Color.White, "HQ Rdy");
-                else
-                    Drawing.DrawText(elise[0] - 60, elise[1], Color.Orange, "HQ: " + _humaQcd.ToString("0.0"));
-                if (_humaWcd == 0)
-                    Drawing.DrawText(elise[0] - 20, elise[1] + 30, Color.White, "HW Rdy");
-                else
-                    Drawing.DrawText(elise[0] - 20, elise[1] + 30, Color.Orange, "HW: " + _humaWcd.ToString("0.0"));
-                if (_humaEcd == 0)
-                    Drawing.DrawText(elise[0], elise[1], Color.White, "HE Rdy");
-                else
-                    Drawing.DrawText(elise[0], elise[1], Color.Orange, "HE: " + _humaEcd.ToString("0.0"));
-            }
-        }
-
-        private void CheckSpells()
-        {
-            if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).Name == "EliseHumanQ" ||
-                ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "EliseHumanW" ||
-                ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Name == "EliseHumanE")
-            {
-                _human = true;
-                _spider = false;
-            }
-
-            if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).Name == "EliseSpiderQCast" ||
-                ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "EliseSpiderW" ||
-                ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Name == "EliseSpiderEInitial")
-            {
-                _human = false;
-                _spider = true;
-            }
-        }		
+			return ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).Name   == "EliseHumanQ";
+		}
 	}
 }

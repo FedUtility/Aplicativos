@@ -15,8 +15,8 @@ namespace FedAllChampionsUtility
 
         private void LoadMenu()
         {
-            Program.Menu.AddSubMenu(new Menu("Alertar DCs", "DC Alerter"));
-            Program.Menu.SubMenu("DC Alerter").AddItem(new MenuItem("Alerter", "Ativar Alerta?").SetValue(true));
+            Program.Menu.AddSubMenu(new Menu("DC Alerter", "DC Alerter"));
+            Program.Menu.SubMenu("DC Alerter").AddItem(new MenuItem("Alerter", "Ativar Alerter?").SetValue(true));
             
         }
 
@@ -26,8 +26,8 @@ namespace FedAllChampionsUtility
             {
 
                 Game.PrintChat("<b><font color='#FF0000'>" + Packet.S2C.PlayerDisconnect.Decoded(args.PacketData).Player.ChampionName +
-                    "</font></b><font color='#FFFFFF'> foi desconectado!</font></b>");
-            }           
+                    "</font></b><font color='#FFFFFF'> has disconnected!</font></b>");
+            }
         }
     }
 }
