@@ -221,10 +221,10 @@ namespace FedAllChampionsUtility
                     if (useW2 && ObjectManager.Player.Distance(q2Target) <= 300 && W.IsReady())
                         W.Cast();
 
-                    if (useQ2 && ObjectManager.Player.Distance(q2Target) <= Q2.Range + q2Target.BoundingRadius)
+                    if (useQ2 && ObjectManager.Player.Distance(q2Target) <= Q2.Range + q2Target.BoundingRadius && Q2.IsReady())
                         Q2.Cast(q2Target, Program.Menu.Item("packet").GetValue<bool>());
 
-                    if (useE2 && eCheck(e2Target, useQ, useW) && ObjectManager.Player.Distance(e2Target) <= E2.Range + q2Target.BoundingRadius)
+                    if (useE2 && eCheck(e2Target, useQ, useW) && ObjectManager.Player.Distance(e2Target) <= E2.Range + q2Target.BoundingRadius && E2.IsReady())
                         E2.Cast(q2Target, Program.Menu.Item("packet").GetValue<bool>());
                 }
 
@@ -243,13 +243,13 @@ namespace FedAllChampionsUtility
 
                 if (HammerTime)
                 {
-                    if (useW2 && ObjectManager.Player.Distance(q2Target) <= 300)
+                    if (useW2 && ObjectManager.Player.Distance(q2Target) <= 300 && W.IsReady())
                         W.Cast();
 
-                    if (useQ2 && ObjectManager.Player.Distance(q2Target) <= Q2.Range + q2Target.BoundingRadius)
+                    if (useQ2 && ObjectManager.Player.Distance(q2Target) <= Q2.Range + q2Target.BoundingRadius && Q2.IsReady())
                         Q2.Cast(q2Target, Program.Menu.Item("packet").GetValue<bool>());
 
-                    if (useE2 && ObjectManager.Player.Distance(q2Target) <= E2.Range + q2Target.BoundingRadius)
+                    if (useE2 && ObjectManager.Player.Distance(q2Target) <= E2.Range + q2Target.BoundingRadius && E2.IsReady())
                         E2.Cast(q2Target, Program.Menu.Item("packet").GetValue<bool>());
                 }
 
@@ -312,7 +312,7 @@ namespace FedAllChampionsUtility
         {
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>())
             {
-                if (enemy != null && !enemy.IsDead && enemy.IsEnemy && ObjectManager.Player.Distance(enemy.ServerPosition) <= QCharge.Range)
+                if (enemy != null && !enemy.IsDead && enemy.IsEnemy && ObjectManager.Player.Distance(enemy.ServerPosition) <= QCharge.Range && enemy.IsValidTarget(QCharge.Range))
                 {
                     //Q
                     if ((ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.Q) - 20) > enemy.Health && canQcd == 0 && Q.GetPrediction(enemy).Hitchance >= HitChance.High && ObjectManager.Player.Distance(enemy.ServerPosition) <= Q.Range)
@@ -320,7 +320,7 @@ namespace FedAllChampionsUtility
                         if (HammerTime && R.IsReady())
                             R.Cast();
 
-                        if (!HammerTime)
+                        if (!HammerTime && Q.IsReady())
                             Q.Cast(enemy, Program.Menu.Item("packet").GetValue<bool>());
                     }
 
@@ -341,7 +341,7 @@ namespace FedAllChampionsUtility
                         if (!HammerTime && R.IsReady())
                             R.Cast();
 
-                        if (HammerTime)
+                        if (HammerTime && Q2.IsReady() && E2.IsReady())
                         {
                             Q2.Cast(enemy, Program.Menu.Item("packet").GetValue<bool>());
                             E2.Cast(enemy, Program.Menu.Item("packet").GetValue<bool>());
@@ -355,7 +355,7 @@ namespace FedAllChampionsUtility
                         if (!HammerTime && R.IsReady())
                             R.Cast();
 
-                        if (HammerTime)
+                        if (HammerTime && Q2.IsReady())
                         {
                             Q2.Cast(enemy, Program.Menu.Item("packet").GetValue<bool>());
                             return;
@@ -368,7 +368,7 @@ namespace FedAllChampionsUtility
                         if (!HammerTime && R.IsReady() && enemy.Health > 80)
                             R.Cast();
 
-                        if (HammerTime)
+                        if (HammerTime && E2.IsReady())
                         {
                             E2.Cast(enemy, Program.Menu.Item("packet").GetValue<bool>());
                             return;
@@ -384,7 +384,7 @@ namespace FedAllChampionsUtility
             {
                 //switch to hammer
                 if ((canQcd != 0 || !useQ) &&
-                    (canWcd != 0 && !hyperCharged() || !useW) &&
+                    (canWcd != 0 && !hyperCharged() || !useW) && R.IsReady() &&
                      hammerAllReady() && !HammerTime && ObjectManager.Player.Distance(target.ServerPosition) < 650 &&
                      (useQ2 || useW2 || useE2))
                 {
@@ -395,7 +395,7 @@ namespace FedAllChampionsUtility
             }
 
             //switch to cannon
-            if (((canQcd == 0 && useQ) || (canWcd == 0 && useW))
+            if (((canQcd == 0 && useQ) || (canWcd == 0 && useW) && R.IsReady())
                 && HammerTime)
             {
                 //Game.PrintChat("Cannon Time");
@@ -403,7 +403,7 @@ namespace FedAllChampionsUtility
                 return;
             }
 
-            if (hamQcd != 0 && hamWcd != 0 && hamEcd != 0 && HammerTime)
+            if (hamQcd != 0 && hamWcd != 0 && hamEcd != 0 && HammerTime && R.IsReady())
             {
                 R.Cast();
                 return;
@@ -475,14 +475,14 @@ namespace FedAllChampionsUtility
                 {
                     if (!lagFree)
                     {
-                        if (ObjectManager.Player.Distance(target) < 250)
+                        if (ObjectManager.Player.Distance(target) < 250 && E.IsReady() && QCharge.IsReady())
                         {
                             E.Cast(vecClose, Program.Menu.Item("packet").GetValue<bool>());
                             QCharge.Cast(tarPred.CastPosition, Program.Menu.Item("packet").GetValue<bool>());
                             firstE = true;
                             return;
                         }
-                        else
+                        else if (QCharge.IsReady())
                         {
                             ePos = GateVector;
                             QCharge.Cast(tarPred.CastPosition, Program.Menu.Item("packet").GetValue<bool>());
@@ -490,7 +490,7 @@ namespace FedAllChampionsUtility
                             return;
                         }
                     }
-                    else
+                    else if (E.IsReady() && QCharge.IsReady())
                     {
                         E.Cast(GateVector, Program.Menu.Item("packet").GetValue<bool>());
                         QCharge.Cast(tarPred.CastPosition, Program.Menu.Item("packet").GetValue<bool>());
@@ -501,7 +501,7 @@ namespace FedAllChampionsUtility
                 Q.Cast(tarPred.CastPosition, Program.Menu.Item("packet").GetValue<bool>());
             }
 
-            if ((Program.Menu.Item("UseQAlways").GetValue<bool>() || !useE) && canQcd == 0 && Q.GetPrediction(target).Hitchance >= HitChance.High && ObjectManager.Player.Distance(target.ServerPosition) <= Q.Range)
+            if ((Program.Menu.Item("UseQAlways").GetValue<bool>() || !useE) && canQcd == 0 && Q.GetPrediction(target).Hitchance >= HitChance.High && ObjectManager.Player.Distance(target.ServerPosition) <= Q.Range && Q.IsReady())
             {
                 Q.Cast(target, Program.Menu.Item("packet").GetValue<bool>());
                 return;
@@ -529,14 +529,14 @@ namespace FedAllChampionsUtility
                 var gateDis = Program.Menu.Item("gatePlace").GetValue<Slider>().Value;
                 var GateVector = ObjectManager.Player.ServerPosition + Vector3.Normalize(Game.CursorPos - ObjectManager.Player.ServerPosition) * gateDis;
 
-                if (!lagFree)
+                if (!lagFree && Q.IsReady())
                 {
                     ePos = GateVector;
                     Q.Cast(Game.CursorPos, Program.Menu.Item("packet").GetValue<bool>());
                     firstE = true;
                     return;
                 }
-                else
+                else if (E.IsReady() && Q.IsReady())
                 {
                     E.Cast(GateVector, Program.Menu.Item("packet").GetValue<bool>());
                     Q.Cast(Game.CursorPos, Program.Menu.Item("packet").GetValue<bool>());
@@ -639,7 +639,7 @@ namespace FedAllChampionsUtility
             {
                 if (Program.Menu.Item("ComboActive").GetValue<KeyBind>().Active)
                 {
-                    if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0)
+                    if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0 && W.IsReady())
                         if (useWCombo)
                         {
                             LXOrbwalker.ResetAutoAttackTimer();
@@ -649,7 +649,7 @@ namespace FedAllChampionsUtility
 
                 if (Program.Menu.Item("HarassActive").GetValue<KeyBind>().Active || Program.Menu.Item("HarassActiveT").GetValue<KeyBind>().Active)
                 {
-                    if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0)
+                    if (canWcd == 0 && ObjectManager.Player.Distance(target) < 600 && !HammerTime && W.Level > 0 && W.IsReady())
                         if (useWHarass)
                         {
                             LXOrbwalker.ResetAutoAttackTimer();
@@ -716,12 +716,12 @@ namespace FedAllChampionsUtility
 
             if (unit == ObjectManager.Player.Name && name == "JayceShockBlastMis")
             {
-                if (ePos != Vector3.Zero && canEcd == 0)
+                if (ePos != Vector3.Zero && canEcd == 0 && E.IsReady())
                 {
                     E.Cast(ePos, Program.Menu.Item("packet").GetValue<bool>());
                     firstE = false;
                 }
-                else if (Program.Menu.Item("forceGate").GetValue<bool>() && canEcd == 0 && ObjectManager.Player.Distance(spell.Position) < 250)
+                else if (Program.Menu.Item("forceGate").GetValue<bool>() && canEcd == 0 && ObjectManager.Player.Distance(spell.Position) < 250 && E.IsReady())
                 {
                     E.Cast(spell.EndPosition, Program.Menu.Item("packet").GetValue<bool>());
                     firstE = false;
@@ -752,9 +752,13 @@ namespace FedAllChampionsUtility
             if (!Program.Menu.Item("UseGap").GetValue<bool>()) return;
 
             if (hamEcd == 0 && gapcloser.Sender.IsValidTarget(E2.Range + gapcloser.Sender.BoundingRadius))
+            {
                 if (!HammerTime && R.IsReady())
                     R.Cast();
-            E2.Cast(gapcloser.Sender, Program.Menu.Item("packet").GetValue<bool>());
+
+                if (E2.IsReady())
+                    E2.Cast(gapcloser.Sender, Program.Menu.Item("packet").GetValue<bool>());
+            }
         }
 
         private static void Interrupter_OnPosibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
@@ -765,13 +769,17 @@ namespace FedAllChampionsUtility
             {
                 if (!HammerTime && R.IsReady())
                     R.Cast();
-                Q2.Cast(unit, Program.Menu.Item("packet").GetValue<bool>());
+
+                if (Q2.IsReady())
+                    Q2.Cast(unit, Program.Menu.Item("packet").GetValue<bool>());
             }
 
             if (ObjectManager.Player.Distance(unit) < E2.Range + unit.BoundingRadius && unit != null && hamEcd == 0)
             {
                 if (!HammerTime && R.IsReady())
                     R.Cast();
+
+                if (E2.IsReady())
                 E2.Cast(unit, Program.Menu.Item("packet").GetValue<bool>());
             }
         }

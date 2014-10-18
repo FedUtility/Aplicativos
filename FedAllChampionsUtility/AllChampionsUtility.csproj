@@ -81,6 +81,7 @@
     <Compile Include="Champions\Jungles\LeeSin.cs" />
     <Compile Include="Champions\Jungles\Maokai.cs" />
     <Compile Include="Champions\Jungles\Nocturne.cs" />
+    <Compile Include="Champions\Jungles\Rengar.cs" />
     <Compile Include="Champions\Jungles\Sion.cs" />
     <Compile Include="Champions\Jungles\Vi.cs" />
     <Compile Include="Champions\MidLines\Ahri.cs" />
