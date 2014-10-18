@@ -20,8 +20,7 @@ namespace FedAllChampionsUtility
             //Ghost,
             Heal,
             //Revive,
-            Cleanse,
-            Smite,
+            Cleanse,            
             Barrier,
             //Teleport,
             Exhaust,
@@ -76,8 +75,7 @@ namespace FedAllChampionsUtility
             SummonerList.Add(new SummonerSpell("summonerbarrier", Summoner.Barrier));
             SummonerList.Add(new SummonerSpell("summonerheal", Summoner.Heal));
             SummonerList.Add(new SummonerSpell("summonerdot", Summoner.Ignite));
-            SummonerList.Add(new SummonerSpell("summonerexhaust", Summoner.Exhaust));
-            SummonerList.Add(new SummonerSpell("summonersmite", Summoner.Smite));
+            SummonerList.Add(new SummonerSpell("summonerexhaust", Summoner.Exhaust));            
             SummonerList.Add(new SummonerSpell("summonerboost", Summoner.Cleanse));
 
             foreach (var spell in SummonerList.Where(spell => spell.IsActive()))
@@ -111,9 +109,7 @@ namespace FedAllChampionsUtility
                             break;
                         }
                     }
-                    break;
-                case Summoner.Smite: // Supported by Tarzan				
-                    break;
+                    break;                
                 case Summoner.Heal:
                     if (!Program.Menu.Item("act_heal_use").GetValue<bool>())
                         break;
@@ -275,10 +271,7 @@ namespace FedAllChampionsUtility
                         break;
                     case Summoner.Ignite:
                         LoadIgniteMenu(menu);
-                        break;
-                    case Summoner.Smite:
-                        LoadSmiteMenu(menu);
-                        break;
+                        break;                   
                     case Summoner.Exhaust:
                         LoadExhoustMenu(menu);
                         break;
@@ -327,16 +320,7 @@ namespace FedAllChampionsUtility
                 menu.SubMenu("act_ignite").AddItem(new MenuItem("act_ignite_useChamp", "= ComboKiller takes Care"));
                 menu.SubMenu("act_ignite").AddItem(new MenuItem("act_ignite_ks", "= not Supportet Champ - KS").SetValue(true));
                 menu.SubMenu("act_ignite").AddItem(new MenuItem("act_ignite_sep4", "========="));
-            }
-
-            private void LoadSmiteMenu(Menu menu)
-            {
-                menu.AddSubMenu(new Menu("Smite", "act_smite"));
-                menu.SubMenu("act_smite").AddItem(new MenuItem("act_smite_sep0", "====== Conditions"));
-                menu.SubMenu("act_smite").AddItem(new MenuItem("act_smite_useChamp", "= Tarzan takes Care"));
-                menu.SubMenu("act_smite").AddItem(new MenuItem("act_smite_sep4", "========="));
-            }
-
+            }  
             private void LoadExhoustMenu(Menu menu)
             {
                 menu.AddSubMenu(new Menu("Exhoust", "act_exhoust"));

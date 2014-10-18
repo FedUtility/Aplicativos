@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
@@ -80,16 +81,15 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("HumanWFarmJ", "Human W")).SetValue(true);
             Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("SpiderQFarmJ", "Spider Q")).SetValue(false);
             Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("SpiderWFarmJ", "Spider W")).SetValue(true);
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("smite", "Auto Smite").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
-            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("ActiveJungle", "Jungle").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
+            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("smite", "Smite Minion in HumanE path").SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
+            Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("SmiteSteal", "Use Smite + Q(Dragon-Baron)").SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Press)));            
             Program.Menu.SubMenu("Jungle").AddItem(new MenuItem("Junglemana", "Minimum Mana").SetValue(new Slider(40, 1, 100)));
 
             //misc
             Program.Menu.AddSubMenu(new Menu("Misc", "Misc"));            
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("Spidergapcloser", "SpiderE to GapCloser")).SetValue(true);
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("Humangapcloser", "HumanE to GapCloser")).SetValue(true);
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("UseEInt", "HumanE to Interrupt")).SetValue(true);
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("smite", "Auto Smite").SetValue(true));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("UseEInt", "HumanE to Interrupt")).SetValue(true);            
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("autoE", "HUmanE with VeryHigh Use").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
             Program.Menu.SubMenu("Misc")
                                    .AddItem(new MenuItem("Echange", "E Hit").SetValue(
@@ -172,6 +172,10 @@ namespace FedAllChampionsUtility
             {
                 AutoE();
 
+            }
+            if (Program.Menu.Item("SmiteSteal").GetValue<KeyBind>().Active)
+            {
+                SmiteSteal();
             }
         }
         private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -659,6 +663,41 @@ namespace FedAllChampionsUtility
                 _human = false;
                 _spider = true;
             }
-        }		
+        }
+
+        private void SmiteSteal()
+        {
+            var baronDragon = MinionManager.GetMinions(ObjectManager.Player.Position, 1100, MinionTypes.All, MinionTeam.NotAlly).FirstOrDefault(i => i.Name == "Worm12.1.1" || i.Name == "Dragon6.1.1");
+            var smiteDmg = ObjectManager.Player.GetSummonerSpellDamage(baronDragon, Damage.SummonerSpell.Smite);
+            var smiterdy = (_smiteSlot != null && _smiteSlot.Slot != SpellSlot.Unknown && _smiteSlot.State == SpellState.Ready);
+            if (baronDragon == null) return;
+            if (_human && _humanQ.IsReady() && ObjectManager.Player.Distance(baronDragon) <= _humanQ.Range)
+            {
+                if (!smiterdy && _humanQ.GetDamage(baronDragon) >= baronDragon.Health)
+                {
+                    _humanQ.Cast(baronDragon, Packets());
+                }
+
+                else if (smiterdy && baronDragon.Health <= (smiteDmg + _humanQ.GetDamage(baronDragon)))
+                {
+                    _humanQ.Cast(baronDragon, Packets());
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(_smiteSlot.Slot, baronDragon);
+
+                }
+            }
+            if (_spider && _spiderQ.IsReady() && ObjectManager.Player.Distance(baronDragon) <= _spiderQ.Range)
+                if (!smiterdy && _spiderQ.GetDamage(baronDragon) >= baronDragon.Health)
+                {
+                    _spiderQ.Cast(baronDragon, Packets());
+                }
+
+                else if (smiterdy && baronDragon.Health <= (smiteDmg + _spiderQ.GetDamage(baronDragon)))
+                {
+                    _spiderQ.Cast(baronDragon, Packets());
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(_smiteSlot.Slot, baronDragon);
+                }
+            if (smiterdy && baronDragon.IsValidTarget(_smiteSlot.SData.CastRange[0]) && smiteDmg > baronDragon.Health)
+                ObjectManager.Player.SummonerSpellbook.CastSpell(_smiteSlot.Slot, baronDragon);
+        }
 	}
 }

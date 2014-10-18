@@ -45,7 +45,7 @@ namespace FedAllChampionsUtility
 
                 Helper = new Helper();
                 map = new Map();
-                jungler = new jJungleTimers();
+                //jungler = new jJungleTimers();
 
                 Menu = new Menu("FedAllChampionsUtility", "FedAllChampionsUtility_" + ObjectManager.Player.ChampionName, true);
 
@@ -61,8 +61,8 @@ namespace FedAllChampionsUtility
                 var skinchanger = new SkinChanger();
                 var disconect = new DisconnectAlerter();
                 var autolevelspells = new AutoLevelSpells();
-                var lasthitmarker = new LasthitMarker();
-                var enemmyrange = new EnemmyRange();
+                //var lasthitmarker = new LasthitMarker();
+                //var enemmyrange = new EnemmyRange();
                 //var potionManager = new PotionManager();
                 //var killability = new Killability();
                 //var trinket = new Trinket();                
