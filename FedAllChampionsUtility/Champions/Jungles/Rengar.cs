@@ -27,7 +27,8 @@ namespace FedAllChampionsUtility
             Game.OnGameUpdate += OnGameUpdate;
             Obj_AI_Hero.OnProcessSpellCast += OnProcessSpell;
             Drawing.OnDraw += OnDraw;
-            Drawing.OnEndScene += OnDraw_EndScene;            
+            Drawing.OnEndScene += OnDraw_EndScene;
+            LXOrbwalker.BeforeAttack += BeforeAttack;
 
             PluginLoaded();
         }
@@ -91,12 +92,17 @@ namespace FedAllChampionsUtility
 
         private void LoadSpells()
         {
+                    var map = Utility.Map.GetMap()._MapType;
+                    var DFGId = (map == Utility.Map.MapType.TwistedTreeline || map == Utility.Map.MapType.CrystalScar)
+                        ? 3128
+                        : 3188;
+
                     YGB = new Items.Item(3142, 0f);     // Ghostblade
                     TMT = new Items.Item(3077, 400f);   // Tiamat
                     HYD = new Items.Item(3074, 400f);   // Hydra
                     BCL = new Items.Item(3144, 450f);   // Cutlass
                     BRK = new Items.Item(3153, 450f);   // Blade of the Ruined King
-                    DFG = new Items.Item(GetDFG(), 750f); // Deathfire Grasp
+                    DFG = new Items.Item(DFGId, 750f); // Deathfire Grasp
 
                     Q = new Spell(SpellSlot.Q);
                     W = new Spell(SpellSlot.W, 500f);
@@ -118,11 +124,11 @@ namespace FedAllChampionsUtility
 
             // W Range
             if (drawW)
-                Utility.DrawCircle(Player.Position, W.Range, W.IsReady() ? Color.Green : Color.Red);
+                Utility.DrawCircle(Player.Position, W.Range, W.IsReady() ? Color.Green : Color.DarkRed);
 
             // E Range
             if (drawE)
-                Utility.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
+                Utility.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Green : Color.DarkRed);
 
             // E Search Position
             if (drawES && Program.Menu.Item("KeysE").GetValue<KeyBind>().Active)
@@ -134,7 +140,7 @@ namespace FedAllChampionsUtility
                 else
                     SearchPosition = Player.Position + Vector3.Normalize(Game.CursorPos - Player.Position) * (E.Range - 200f);
 
-                Utility.DrawCircle(SearchPosition, 200f, E.IsReady() ? Color.Green : Color.Red);
+                Utility.DrawCircle(SearchPosition, 200f, E.IsReady() ? Color.Green : Color.DarkRed);
             }
 
             // Ultimate Range
@@ -146,13 +152,10 @@ namespace FedAllChampionsUtility
             {
                 var FeroSpell = Program.Menu.Item("FeroSpellC").GetValue<StringList>();
 
-                int posX = 0;
-                if (Drawing.WorldToMinimap(new Vector3()).X < Drawing.Width / 2)
-                    posX = Drawing.Width - 140;
-                else
-                    posX = 10;
+                var posX = Drawing.WorldToMinimap(new Vector3()).X < Drawing.Width / 2 ? Drawing.Width - 140 : 10;
 
-                Drawing.DrawText(posX, (Drawing.Height * 0.85f), Color.YellowGreen, "Ferocity Spell: {0}", FeroSpell.SList[FeroSpell.SelectedIndex]);
+                Drawing.DrawText(posX, (Drawing.Height * 0.85f), Color.YellowGreen, "Ferocity Spell: {0}",
+                FeroSpell.SList[FeroSpell.SelectedIndex]);
             }
         }
 
@@ -168,6 +171,26 @@ namespace FedAllChampionsUtility
         {
             if (sender.IsMe && args.SData.Name == "RengarE")
                 LastETick = Environment.TickCount;
+        }
+
+        private static void BeforeAttack(LXOrbwalker.BeforeAttackEventArgs eventArgs)
+        {
+            if (!eventArgs.Unit.IsMe || !Q.IsReady() ||
+                !(LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear))
+                return;
+
+            var EmpoweredQ =
+                Program.Menu.Item("FeroSpell" + (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo ? "C" : "F"))
+                    .GetValue<StringList>()
+                    .SelectedIndex == 0;
+
+            var SaveFerocity = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear &&
+                               Program.Menu.Item("FeroSaveRRdy").GetValue<bool>();
+
+            if (Player.Mana == 5 && (!EmpoweredQ || SaveFerocity))
+                return;
+
+            Q.Cast();
         }
 
         private static void OnGameUpdate(EventArgs args)
@@ -213,8 +236,8 @@ namespace FedAllChampionsUtility
 
             var Target = SimpleTs.GetTarget(1600f, SimpleTs.DamageType.Physical);
 
-            if (Player.HasBuff("RengarR", true))
-                LXOrbwalker.ForcedTarget = Target;
+            if (Player.HasBuff("RengarR", true))                
+            LXOrbwalker.SetAttack(LXOrbwalker.GetPossibleTarget() == (SimpleTs.GetSelectedTarget() != null ? SimpleTs.GetSelectedTarget() : Target));
 
 
             // Use Tiamat / Hydra
@@ -249,11 +272,6 @@ namespace FedAllChampionsUtility
 
                 switch (FeroSpell.SelectedIndex)
                 {
-                    case 0:
-                        if (!Target.IsValidTarget(LXOrbwalker.GetAutoAttackRange(Player)))
-                            return;
-                        Q.Cast();
-                        break;
                     case 1:
                         if (!Target.IsValidTarget(W.Range))
                             return;
@@ -266,17 +284,15 @@ namespace FedAllChampionsUtility
                         break;
                 }
                 return;
-            }
-
-            // Normal Spells
-            if (Q.IsReady() && Target.IsValidTarget(LXOrbwalker.GetAutoAttackRange(Player)))
-                Q.Cast();
+            }            
 
             // Don't cast W or E while ultimate is active (force leap)
             if (Player.HasBuff("RengarR", true))
                 return;
 
-            if (E.IsReady() && Target.IsValidTarget(E.Range) && (!Target.HasBuff("RengarEFinalMAX", true) && !Target.HasBuff("rengareslow") && LastETick + 1500 < Environment.TickCount || ForceE))
+            if (E.IsReady() && Target.IsValidTarget(E.Range) &&
+                (!Target.HasBuff("RengarEFinalMAX", true) && !Target.HasBuff("rengareslow") &&
+                 LastETick + 1500 < Environment.TickCount || ForceE))
                 E.Cast(Target);
 
             if (W.IsReady() && Target.IsValidTarget(W.Range))
@@ -296,11 +312,9 @@ namespace FedAllChampionsUtility
             // Ferocity Spells
             if (Player.Mana == 5)
             {
-                if (Target.IsValidTarget(W.Range) && (Player.Health / Player.MaxHealth <= ForceW.Value / 100f || FeroSpell.SelectedIndex == 1))
+                if (Target.IsValidTarget(W.Range) &&
+                    (Player.Health / Player.MaxHealth <= ForceW.Value / 100f || FeroSpell.SelectedIndex == 1))
                     W.Cast();
-
-                if (Target.IsValidTarget(LXOrbwalker.GetAutoAttackRange(Player)) && FeroSpell.SelectedIndex == 0)
-                    Q.Cast();
 
                 if (Target.IsValidTarget(E.Range) && FeroSpell.SelectedIndex == 2)
                     E.Cast();
@@ -346,29 +360,29 @@ namespace FedAllChampionsUtility
 
             if (Player.Mana == 5 && FeroSpell.SelectedIndex == 0) return;
 
-            foreach (var minion in MinionManager.GetMinions(Player.Position, E.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.Health))
+            foreach (
+                var minion in
+                    MinionManager.GetMinions(Player.Position, E.Range, MinionTypes.All, MinionTeam.NotAlly,
+                        MinionOrderTypes.Health))
             {
-                if (useW && W.IsReady() && minion.IsValidTarget(W.Range) && minion.Health < W.GetDamage(minion) && (Player.Mana == 5 ? FeroSpell.SelectedIndex == 1 : true))
+                if (minion.IsValidTarget(LXOrbwalker.GetAutoAttackRange(Player)) && LXOrbwalker.GetPossibleTarget() == minion)
+                    return;
+
+                if (useW && W.IsReady() && minion.IsValidTarget(W.Range) && minion.Health < W.GetDamage(minion) &&
+                    (Player.Mana == 5 ? FeroSpell.SelectedIndex == 1 : true))
                 {
                     W.Cast();
                     return;
                 }
 
-                if (useE && E.IsReady() && minion.IsValidTarget(E.Range) && minion.Health < E.GetDamage(minion) && (Player.Mana == 5 ? FeroSpell.SelectedIndex == 1 : true))
+                if (useE && E.IsReady() && minion.IsValidTarget(E.Range) &&
+                    HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion) * E.Speed)) <
+                    E.GetDamage(minion) && (Player.Mana == 5 ? FeroSpell.SelectedIndex == 1 : true))
                 {
                     E.Cast(minion);
                     return;
                 }
             }
-        }  
-
-        private static int GetDFG()
-        {
-            var map = Utility.Map.GetMap()._MapType;
-            if (map == Utility.Map.MapType.TwistedTreeline || map == Utility.Map.MapType.CrystalScar)
-                return 3128;
-            else
-                return 3188;
         }
     }
 }

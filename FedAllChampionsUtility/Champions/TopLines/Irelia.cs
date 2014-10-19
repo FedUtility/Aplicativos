@@ -83,9 +83,7 @@ namespace FedAllChampionsUtility
             _w = new Spell(SpellSlot.W, Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)); // So confused.
             _e = new Spell(SpellSlot.E, 425);
             _r = new Spell(SpellSlot.R, 1000);
-
-            //Q.SetSkillshot(0.25f, 75f, 1500f, false, Prediction.SkillshotType.SkillshotLine);
-            //E.SetSkillshot(0.15f, 75f, 1500f, false, Prediction.SkillshotType.SkillshotCircle);
+            
             _r.SetSkillshot(0.15f, 80f, 1500f, false, SkillshotType.SkillshotLine); // fix new prediction
         }
 
@@ -164,7 +162,7 @@ namespace FedAllChampionsUtility
                     {
                         var damage = ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q);
 
-                        if (damage >= minion.Health)
+                        if (damage > minion.Health)
                             _q.Cast(minion, _packetCast);
                     }
                     else
@@ -181,7 +179,7 @@ namespace FedAllChampionsUtility
         private void LastHitWithQ()
         {
             var minions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _q.Range);
-            foreach (var minion in minions.Where(minion => ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health))
+            foreach (var minion in minions.Where(minion => ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q) > minion.Health))
             {
                 var noFarmDangerous = Program.Menu.Item("qNoFarmTower").GetValue<bool>();
                 // If do not farm under tower
