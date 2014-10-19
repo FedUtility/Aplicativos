@@ -181,7 +181,7 @@ namespace FedAllChampionsUtility
         {
             if (E.IsReady())
             {
-                var minHitE = Program.Menu.Item("MinR").GetValue<Slider>().Value;
+                var minHitE = Program.Menu.Item("MinE").GetValue<Slider>().Value;
                 var eTarget = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Magical);
                 var alliesarround = 0;
                 foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())

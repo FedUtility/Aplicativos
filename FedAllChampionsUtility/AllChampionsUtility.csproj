@@ -108,6 +108,7 @@
     <Compile Include="Champions\Support\Zyra.cs" />
     <Compile Include="Champions\TopLines\Gangplank.cs" />
     <Compile Include="Champions\TopLines\Gnar.cs" />
+    <Compile Include="Champions\TopLines\Irelia.cs" />
     <Compile Include="Champions\TopLines\Jax.cs" />
     <Compile Include="Champions\TopLines\Riven.cs" />
     <Compile Include="Champions\TopLines\Ryze.cs" />

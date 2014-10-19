@@ -14,7 +14,7 @@ namespace FedAllChampionsUtility
 		public static Menu Menu;		     
         public static Helper Helper;
         public static Map map;
-        public static jJungleTimers jungler;
+        //public static jJungleTimers jungler;
 
         public static IEnumerable<Obj_AI_Hero> AllHeros = ObjectManager.Get<Obj_AI_Hero>();
         public static IEnumerable<Obj_AI_Hero> AllHerosFriend = ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsAlly);
