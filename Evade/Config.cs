@@ -82,7 +82,7 @@ namespace Evade
                 {
                     foreach (var spell in SpellDatabase.Spells)
                     {
-                        if (spell.ChampionName == hero.ChampionName)
+                        if (spell.ChampionName.ToLower() == hero.ChampionName.ToLower())
                         {
                             var subMenu = new Menu(spell.MenuItemName, spell.MenuItemName);
 
