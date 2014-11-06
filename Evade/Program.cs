@@ -851,7 +851,7 @@ namespace Evade
                     {
                         if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
                         {
-                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, EvadePoint.To3D());
+                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
                         }
 
                         //Let the user move freely inside the skillshot.

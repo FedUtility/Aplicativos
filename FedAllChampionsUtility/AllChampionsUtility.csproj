@@ -163,34 +163,34 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BuffManagerLib">
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\BuffManagerLib.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\BuffManagerLib.dll</HintPath>
     </Reference>
     <Reference Include="clipper_library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\clipper_library.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="Evade">
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\Evade.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\Evade.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp, Version=1.0.0.25, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LX-Orbwalker">
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\LX-Orbwalker.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\LX-Orbwalker.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Fernando\Desktop\AssemblyInstaller\LSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\Users\Fernando\Desktop\LeagueSharp\\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

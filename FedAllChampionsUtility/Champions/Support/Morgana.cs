@@ -161,7 +161,7 @@ namespace FedAllChampionsUtility
 		{
 			if(!R.IsReady())
 				return;
-			if (Utility.CountEnemysInRange((int)R.Range,ObjectManager.Player) >= Program.Menu.Item("useR_TeamFight").GetValue<Slider>().Value)
+			if (Utility.CountEnemysInRange(ObjectManager.Player, (int)R.Range) >= Program.Menu.Item("useR_TeamFight").GetValue<Slider>().Value)
 			{
 				R.Cast();
 			}

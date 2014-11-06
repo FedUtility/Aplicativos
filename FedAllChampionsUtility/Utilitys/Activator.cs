@@ -128,7 +128,7 @@ namespace FedAllChampionsUtility
                             {
                                 if (Program.Menu.Item("act_heal_ifEnemy1").GetValue<bool>())
                                 {
-                                    if (Utility.CountEnemysInRange(1000, friend) > 0)
+                                    if (Utility.CountEnemysInRange(friend, 1000) > 0)
                                     {
                                         spell.CastSpell();
                                         break;
@@ -144,7 +144,7 @@ namespace FedAllChampionsUtility
                             {
                                 if (Program.Menu.Item("act_heal_ifEnemy2").GetValue<bool>())
                                 {
-                                    if (Utility.CountEnemysInRange(1000, friend) > 0)
+                                    if (Utility.CountEnemysInRange(friend, 1000) > 0)
                                     {
                                         spell.CastSpell();
                                         break;
@@ -172,7 +172,7 @@ namespace FedAllChampionsUtility
                     {
                         if (Program.Menu.Item("act_barrier_ifEnemy1").GetValue<bool>())
                         {
-                            if (Utility.CountEnemysInRange(1000, ObjectManager.Player) > 0)
+                            if (Utility.CountEnemysInRange(ObjectManager.Player, 1000) > 0)
                             {
                                 spell.CastSpell();
                                 break;
@@ -188,7 +188,7 @@ namespace FedAllChampionsUtility
                     {
                         if (Program.Menu.Item("act_barrier_ifEnemy2").GetValue<bool>())
                         {
-                            if (Utility.CountEnemysInRange(1000, ObjectManager.Player) > 0)
+                            if (Utility.CountEnemysInRange(ObjectManager.Player, 1000) > 0)
                                 spell.CastSpell();
                         }
                         else

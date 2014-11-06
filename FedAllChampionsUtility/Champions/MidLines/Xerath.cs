@@ -192,9 +192,8 @@ namespace FedAllChampionsUtility
                 lowesttarget[0] = enemy;
             }            
 
-            if (lowesttarget[0] != null && Program.Menu.Item("DontUlt" + lowesttarget[0].BaseSkinName) != null &&
-                Program.Menu.Item("DontUlt" + lowesttarget[0].BaseSkinName).GetValue<bool>() == false && 
-                lowesttarget[0].Health < (((float)ObjectManager.Player.GetSpellDamage(lowesttarget[0], SpellSlot.R) * 3) * 0.9) && Environment.TickCount - UltTick >= 700)
+            if (lowesttarget[0] != null &&
+                lowesttarget[0].Health < ((ObjectManager.Player.GetSpellDamage(lowesttarget[0], SpellSlot.R) * 3) * 0.9) && Environment.TickCount - UltTick >= 700)
             {
                 R.Cast(lowesttarget[0], Packets());
                 UltTick = Environment.TickCount;
@@ -290,7 +289,7 @@ namespace FedAllChampionsUtility
 
         private static void SimplePing()
         {
-            Packet.S2C.Ping.Encoded(new Packet.S2C.Ping.Struct(PingLocation.X, PingLocation.Y, 0, 0, Packet.PingType.FallbackSound)).Process();
+            Packet.S2C.Ping.Encoded(new Packet.S2C.Ping.Struct(PingLocation.X, PingLocation.Y, 0, 0, Packet.PingType.Fallback)).Process();
         }
 
         private void Drawing_OnDraw(EventArgs args)

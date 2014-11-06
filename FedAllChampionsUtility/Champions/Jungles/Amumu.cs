@@ -132,7 +132,7 @@ namespace FedAllChampionsUtility
 
                     foreach (Obj_AI_Base unit in ObjectManager.Get<Obj_AI_Base>().Where(x => x.IsValidTarget(_spellQ.Range) && _spellQ.GetPrediction(x).Hitchance >= HitChance.High)) //causes troubles?
                     {
-                        int targetsHit = Utility.CountEnemysInRange((int)_spellR.Range, unit); //unitposition might not reflect where you land with Q
+                        int targetsHit = Utility.CountEnemysInRange(unit, (int)_spellR.Range); //unitposition might not reflect where you land with Q
 
                         if (targetsHit > maxTargetsHit || (unitMostTargetsHit != null && targetsHit >= maxTargetsHit && unit.Type == GameObjectType.obj_AI_Hero))
                         {
