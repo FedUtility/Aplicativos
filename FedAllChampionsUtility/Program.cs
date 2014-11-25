@@ -70,13 +70,13 @@ namespace FedAllChampionsUtility
                 var bushRevealer = new AutoRevelarMoita();                
                 var baseult = new BaseUlt();
 
-                var trackerMenu = new Menu("Tracker", "Tracker");
-                Tracker.AddtoMenu(trackerMenu);
+                //var trackerMenu = new Menu("Tracker", "Tracker");
+                //Tracker.AddtoMenu(trackerMenu);
 
                 var trackerward = new Menu("Ward Tracker", "Ward Tracker");
                 WardTracker.AttachToMenu(trackerward);
 
-                var revelar = new Revealer();
+                //var revelar = new Revealer();
 
                 var activatorMenu = new Menu("Activator", "Activator");
                 Activator.AddtoMenu(activatorMenu);
