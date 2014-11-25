@@ -167,8 +167,7 @@ namespace Evade
                     MissileSpellName = "AhriSeduceMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             #endregion Ahri
@@ -193,8 +192,7 @@ namespace Evade
                     MissileSpellName = "SadMummyBandageToss",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -300,7 +298,7 @@ namespace Evade
                     IsDangerous = false,
                     MissileSpellName = "VolleyAttack",
                     MultipleNumber = 7,
-                    MultipleAngle = 9.58f * (float) Math.PI / 180,
+                    MultipleAngle = 9.58f * (float)Math.PI / 180,
                     CanBeRemoved = false,
                 });
 
@@ -346,8 +344,7 @@ namespace Evade
                     MissileSpellName = "RocketGrabMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -390,8 +387,7 @@ namespace Evade
                     MissileSpellName = "BrandBlazeMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -434,8 +430,7 @@ namespace Evade
                     MissileSpellName = "BraumQMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -498,8 +493,7 @@ namespace Evade
                     MissileSpellName = "CaitlynEntrapmentMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             #endregion Caitlyn
@@ -605,8 +599,7 @@ namespace Evade
                     MissileSpellName = "MissileBarrageMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -627,8 +620,7 @@ namespace Evade
                     MissileSpellName = "MissileBarrageMissile2",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             #endregion Corki
@@ -675,8 +667,7 @@ namespace Evade
                     MissileSpellName = "InfectedCleaverMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             #endregion DrMundo
@@ -744,8 +735,7 @@ namespace Evade
                     MissileSpellName = "EliseHumanE",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall }
                 });
 
             #endregion Elise
@@ -793,8 +783,7 @@ namespace Evade
                     ExtraMissileNames = new[] { "EzrealMysticShotPulseMissile" },
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                     Id = 229,
                 });
 
@@ -1151,7 +1140,7 @@ namespace Evade
                     MissileSpellName = "GravesClusterShotAttack",
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                     MultipleNumber = 3,
-                    MultipleAngle = 15 * (float) Math.PI / 180,
+                    MultipleAngle = 15 * (float)Math.PI / 180,
                 });
 
             Spells.Add(
@@ -1171,8 +1160,7 @@ namespace Evade
                     IsDangerous = true,
                     MissileSpellName = "GravesChargeShotShot",
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Graves
@@ -1325,8 +1313,7 @@ namespace Evade
                     MissileSpellName = "JayceShockBlastMis",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -1347,8 +1334,7 @@ namespace Evade
                     MissileSpellName = "JayceShockBlastWallMis",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Jayce
@@ -1374,8 +1360,7 @@ namespace Evade
                     MissileSpellName = "JinxWMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -1400,6 +1385,32 @@ namespace Evade
 
             #endregion Jinx
 
+            #region Kalista
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Kalista",
+                    SpellName = "KalistaMysticShot",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1200,
+                    Radius = 40,
+                    MissileSpeed = 1700,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "kalistamysticshotmis",
+                    ExtraMissileNames = new[] { "kalistamysticshotmistrue" },
+                    CanBeRemoved = true,
+                    CollisionObjects =
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                });
+
+            #endregion Kalista
+
             #region Karma
 
             Spells.Add(
@@ -1420,8 +1431,7 @@ namespace Evade
                     MissileSpellName = "KarmaQMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             //TODO: add the circle at the end.
@@ -1443,8 +1453,7 @@ namespace Evade
                     MissileSpellName = "KarmaQMissileMantra",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Karma
@@ -1519,8 +1528,7 @@ namespace Evade
                     MissileSpellName = "KennenShurikenHurlMissile1",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Kennen
@@ -1546,10 +1554,9 @@ namespace Evade
                     MissileSpellName = "KhazixWMissile",
                     CanBeRemoved = true,
                     MultipleNumber = 3,
-                    MultipleAngle = 22f * (float) Math.PI / 180,
+                    MultipleAngle = 22f * (float)Math.PI / 180,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -1572,12 +1579,12 @@ namespace Evade
 
             #endregion Khazix
 
-            #region KogMaw
+            #region Kogmaw
 
             Spells.Add(
                 new SpellData
                 {
-                    ChampionName = "KogMaw",
+                    ChampionName = "Kogmaw",
                     SpellName = "KogMawQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotMissileLine,
@@ -1592,14 +1599,13 @@ namespace Evade
                     MissileSpellName = "KogMawQMis",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
                 new SpellData
                 {
-                    ChampionName = "KogMaw",
+                    ChampionName = "Kogmaw",
                     SpellName = "KogMawVoidOoze",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
@@ -1618,7 +1624,7 @@ namespace Evade
             Spells.Add(
                 new SpellData
                 {
-                    ChampionName = "KogMaw",
+                    ChampionName = "Kogmaw",
                     SpellName = "KogMawLivingArtillery",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
@@ -1633,7 +1639,7 @@ namespace Evade
                     MissileSpellName = "KogMawLivingArtillery",
                 });
 
-            #endregion KogMaw
+            #endregion Kogmaw
 
             #region Leblanc
 
@@ -1691,8 +1697,7 @@ namespace Evade
                     MissileSpellName = "LeblancSoulShackle",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -1713,8 +1718,7 @@ namespace Evade
                     MissileSpellName = "LeblancSoulShackleM",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Leblanc
@@ -1739,8 +1743,7 @@ namespace Evade
                     MissileSpellName = "BlindMonkQOne",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion LeeSin
@@ -2022,8 +2025,7 @@ namespace Evade
                     MissileSpellName = "DarkBindingMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Morgana
@@ -2089,8 +2091,7 @@ namespace Evade
                     MissileSpellName = "NautilusAnchorDragMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                     //walls?
                 });
 
@@ -2116,8 +2117,7 @@ namespace Evade
                     MissileSpellName = "JavelinToss",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Nidalee
@@ -2143,8 +2143,7 @@ namespace Evade
                     MissileSpellName = "olafaxethrow",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Olaf
@@ -2268,8 +2267,7 @@ namespace Evade
                     MissileSpellName = "QuinnQMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Quinn
@@ -2294,8 +2292,7 @@ namespace Evade
                     MissileSpellName = "RengarEFinal",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Rengar
@@ -2318,7 +2315,7 @@ namespace Evade
                     DangerValue = 5,
                     IsDangerous = true,
                     MultipleNumber = 3,
-                    MultipleAngle = 15 * (float) Math.PI / 180,
+                    MultipleAngle = 15 * (float)Math.PI / 180,
                     MissileSpellName = "RivenLightsaberMissile",
                     ExtraMissileNames = new[] { "RivenLightsaberMissileSide" }
                 });
@@ -2345,8 +2342,7 @@ namespace Evade
                     MissileSpellName = "RumbleGrenade",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -2392,8 +2388,7 @@ namespace Evade
                     MissileSpellName = "",
                     ExtraRange = 200,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall },
                 });
             //TODO: fix?
             Spells.Add(
@@ -2416,7 +2411,7 @@ namespace Evade
                     CollisionObjects = new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
-            #endregion Shen
+            #endregion Sejuani
 
             #region Sion
 
@@ -2485,8 +2480,7 @@ namespace Evade
                     MissileSpellName = "ShenShadowDash",
                     ExtraRange = 200,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Shen
@@ -2510,8 +2504,7 @@ namespace Evade
                     IsDangerous = false,
                     MissileSpellName = "ShyvanaFireballMissile",
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -2743,7 +2736,7 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MultipleNumber = 3,
-                    MultipleAngle = 20 * (float) Math.PI / 180,
+                    MultipleAngle = 20 * (float)Math.PI / 180,
                     MissileSpellName = "talonrakemissileone",
                 });
 
@@ -2763,7 +2756,7 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MultipleNumber = 3,
-                    MultipleAngle = 20 * (float) Math.PI / 180,
+                    MultipleAngle = 20 * (float)Math.PI / 180,
                     MissileSpellName = "talonrakemissiletwo",
                 });
 
@@ -2789,8 +2782,7 @@ namespace Evade
                     MissileSpellName = "ThreshQMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -2877,7 +2869,7 @@ namespace Evade
                     IsDangerous = false,
                     MissileSpellName = "SealFateMissile",
                     MultipleNumber = 3,
-                    MultipleAngle = 28 * (float) Math.PI / 180,
+                    MultipleAngle = 28 * (float)Math.PI / 180,
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                 });
 
@@ -3072,8 +3064,7 @@ namespace Evade
                     MissileSpellName = "VelkozQMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -3094,8 +3085,7 @@ namespace Evade
                     MissileSpellName = "VelkozQMissileSplit",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -3237,8 +3227,7 @@ namespace Evade
                     MissileSpellName = "XerathMageSpearMissile",
                     CanBeRemoved = true,
                     CollisionObjects =
-                        new[]
-                        { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                        new[] { CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
 
             Spells.Add(
@@ -3261,7 +3250,7 @@ namespace Evade
 
             #endregion Xerath
 
-            #region Yasuo 
+            #region Yasuo
 
             Spells.Add(
                 new SpellData
