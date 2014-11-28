@@ -113,6 +113,7 @@
     <Compile Include="Champions\TopLines\Riven.cs" />
     <Compile Include="Champions\TopLines\Ryze.cs" />
     <Compile Include="Champions\TopLines\Teemo.cs" />
+    <Compile Include="Initiator.cs" />
     <Compile Include="SpellData.cs" />
     <Compile Include="Utilitys\CardSelector.cs" />
     <Compile Include="Champions\TopLines\DrMundo.cs" />

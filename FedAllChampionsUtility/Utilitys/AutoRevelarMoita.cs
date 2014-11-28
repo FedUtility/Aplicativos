@@ -104,7 +104,7 @@ namespace FedAllChampionsUtility
                 {
                     var th = angle * i;
                     var pos = new Vector3((float)(lastPos.X + radius * Math.Cos(th)), (float)(lastPos.Y + radius * Math.Sin(th)), 0);
-                    wardLocations[i] = new WardLocation(pos, NavMesh.IsWallOfGrass(pos));
+                    wardLocations[i] = new WardLocation(pos, NavMesh.IsWallOfGrass(pos, 65));
                 }
 
                 var grassLocations = new List<GrassLocation>();
