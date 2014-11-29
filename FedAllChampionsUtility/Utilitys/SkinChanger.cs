@@ -41,7 +41,7 @@ namespace FedAllChampionsUtility
             numSkins.Add("Draven", 5);
             numSkins.Add("DrMundo", 7);
             numSkins.Add("Elise", 2);
-            numSkins.Add("Evelynn", 3);
+            numSkins.Add("Evelynn", 4);
             numSkins.Add("Ezreal", 7);
             numSkins.Add("Fiddlesticks", 8);
             numSkins.Add("Fiora", 3);
@@ -60,6 +60,7 @@ namespace FedAllChampionsUtility
             numSkins.Add("Jax", 8);
             numSkins.Add("Jayce", 2);
             numSkins.Add("Jinx", 1);
+            numSkins.Add("Kalista", 1);
             numSkins.Add("Karma", 3);
             numSkins.Add("Karthus", 4);
             numSkins.Add("Kassadin", 4);
@@ -67,7 +68,7 @@ namespace FedAllChampionsUtility
             numSkins.Add("Kayle", 6);
             numSkins.Add("Kennen", 5);
             numSkins.Add("Khazix", 2);
-            numSkins.Add("KogMaw", 7);
+            numSkins.Add("KogMaw", 8);
             numSkins.Add("Leblanc", 3);
             numSkins.Add("LeeSin", 6);
             numSkins.Add("Leona", 4);
@@ -108,7 +109,7 @@ namespace FedAllChampionsUtility
             numSkins.Add("Singed", 6);
             numSkins.Add("Sion", 4);
             numSkins.Add("Sivir", 6);
-            numSkins.Add("Skarner", 2);
+            numSkins.Add("Skarner", 3);
             numSkins.Add("Sona", 5);
             numSkins.Add("Soraka", 3);
             numSkins.Add("Swain", 3);
@@ -118,10 +119,10 @@ namespace FedAllChampionsUtility
             numSkins.Add("Teemo", 7);
             numSkins.Add("Thresh", 2);
             numSkins.Add("Tristana", 6);
-            numSkins.Add("Trundle", 3);
+            numSkins.Add("Trundle", 4);
             numSkins.Add("Tryndamere", 6);
             numSkins.Add("TwistedFate", 8);
-            numSkins.Add("Twitch", 5);
+            numSkins.Add("Twitch", 6);
             numSkins.Add("Udyr", 3);
             numSkins.Add("Urgot", 3);
             numSkins.Add("Varus", 3);
@@ -131,7 +132,7 @@ namespace FedAllChampionsUtility
             numSkins.Add("Viktor", 3);
             numSkins.Add("Vi", 3);
             numSkins.Add("Vladimir", 6);
-            numSkins.Add("Volibear", 3);
+            numSkins.Add("Volibear", 4);
             numSkins.Add("Warwick", 7);
             numSkins.Add("Xerath", 3);
             numSkins.Add("XinZhao", 5);
