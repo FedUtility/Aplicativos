@@ -91,6 +91,7 @@
     <Compile Include="Champions\MidLines\Karthus.cs" />
     <Compile Include="Champions\MidLines\Katarina.cs" />
     <Compile Include="Champions\MidLines\LeBlanc.cs" />
+    <Compile Include="Champions\MidLines\Nidalee.cs" />
     <Compile Include="Champions\MidLines\Orianna.cs" />
     <Compile Include="Champions\MidLines\Swain.cs" />
     <Compile Include="Champions\MidLines\Syndra.cs" />
