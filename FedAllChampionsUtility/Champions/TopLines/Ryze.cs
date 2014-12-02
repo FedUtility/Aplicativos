@@ -52,7 +52,8 @@ namespace FedAllChampionsUtility
             Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseR", "Use R").SetValue(true));
             Program.Menu.SubMenu("Combo").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
 
-            Program.Menu.AddSubMenu(new Menu("Harass", "Harass"));            
+            Program.Menu.AddSubMenu(new Menu("Harass", "Harass"));
+            Program.Menu.SubMenu("Harass").AddItem(new MenuItem("AutoHarass", "Auto Q (toggle)!").SetValue<KeyBind>(new KeyBind('T', KeyBindType.Toggle)));
             Program.Menu.SubMenu("Harass").AddItem(new MenuItem("HQ", "Use Q").SetValue(true));
             Program.Menu.SubMenu("Harass").AddItem(new MenuItem("HW", "Use W").SetValue(true));
             Program.Menu.SubMenu("Harass").AddItem(new MenuItem("HE", "Use E").SetValue(true));
@@ -74,11 +75,21 @@ namespace FedAllChampionsUtility
             Program.Menu.AddSubMenu(new Menu("Extra", "Extra"));
             Program.Menu.SubMenu("Extra").AddItem(new MenuItem("UseSera", "Use Seraphs Embrace").SetValue(true));
             Program.Menu.SubMenu("Extra").AddItem(new MenuItem("HP", "When % HP").SetValue(new Slider(20, 100, 0)));
-            Program.Menu.SubMenu("Extra").AddItem(new MenuItem("UseWGap", "Use W GapCloser").SetValue(true));            
+            Program.Menu.SubMenu("Extra").AddItem(new MenuItem("UseWGap", "Use W GapCloser").SetValue(true));
+
+            //Damage after combo:
+            var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "Draw damage after combo").SetValue(true);
+            Utility.HpBarDamageIndicator.DamageToUnit = GetComboDamage;
+            Utility.HpBarDamageIndicator.Enabled = dmgAfterComboItem.GetValue<bool>();
+            dmgAfterComboItem.ValueChanged += delegate(object sender, OnValueChangeEventArgs eventArgs)
+            {
+                Utility.HpBarDamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
+            };
 
             Program.Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
             Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q range").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
             Program.Menu.SubMenu("Drawings").AddItem(new MenuItem("WERange", "W+E range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+            Program.Menu.SubMenu("Drawings").AddItem(dmgAfterComboItem);
         }
 
         private void Game_OnGameUpdate(EventArgs args)
@@ -91,29 +102,37 @@ namespace FedAllChampionsUtility
                 else if (Program.Menu.Item("TypeCombo").GetValue<StringList>().SelectedIndex == 1) ComboBurst();
                 else if (Program.Menu.Item("TypeCombo").GetValue<StringList>().SelectedIndex == 2) ComboLong();
             }
-
-            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
+            else
             {
-                Harass();
-            }
 
-            var lc = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
-            if (lc || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
-                Farm(lc);
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
+                {
+                    Harass();
+                }
 
-            if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
-            {
-                JungleFarm();
-            }
+                var lc = LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear;
+                if (lc || LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Harass)
+                    Farm(lc);
 
-            if (Program.Menu.Item("UseSera").GetValue<bool>())
-            {
-                UseItems();
-            }
+                if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.LaneClear)
+                {
+                    JungleFarm();
+                }
 
-            if (Program.Menu.Item("KillSteal").GetValue<bool>())
-            {
-                KillSteal();
+                if (Program.Menu.Item("UseSera").GetValue<bool>())
+                {
+                    UseItems();
+                }
+
+                if (Program.Menu.Item("KillSteal").GetValue<bool>())
+                {
+                    KillSteal();
+                }
+
+                if (Program.Menu.Item("AutoHarass").GetValue<KeyBind>().Active)
+                {
+                    Harass();
+                }
             }
         }
 
@@ -135,7 +154,7 @@ namespace FedAllChampionsUtility
         private static void OrbwalkingOnBeforeAttack(LXOrbwalker.BeforeAttackEventArgs args)
         {
             if (LXOrbwalker.CurrentMode == LXOrbwalker.Mode.Combo)
-                args.Process = !(Q.IsReady() || W.IsReady() || E.IsReady() ||ObjectManager.Player.Distance(args.Target) >= 600);
+                args.Process = !(Q.IsReady() || W.IsReady() || E.IsReady() || Vector3.Distance(ObjectManager.Player.Position, args.Target.Position) >= 600);  
         }
 
         private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
@@ -173,7 +192,7 @@ namespace FedAllChampionsUtility
             }
             if (sender.IsEnemy && (sender.Type == GameObjectType.obj_AI_Hero || sender.Type == GameObjectType.obj_AI_Turret))
             {
-                if (SpellData.SpellName.Any(Each => Each.Contains(args.SData.Name)) || (args.Target == ObjectManager.Player && ObjectManager.Player.Distance(sender) <= 700))
+                if (SpellData.SpellName.Any(Each => Each.Contains(args.SData.Name)) || (args.Target == ObjectManager.Player && Vector3.Distance(ObjectManager.Player.Position, sender.Position) <= 700))
                     UseShield = true;
             }
         }
@@ -188,6 +207,20 @@ namespace FedAllChampionsUtility
         public bool IgniteKillable(Obj_AI_Hero source, Obj_AI_Base target)
         {
             return Damage.GetSummonerSpellDamage(ObjectManager.Player, target, Damage.SummonerSpell.Ignite) > target.Health;
+        }
+
+        public float GetComboDamage(Obj_AI_Base enemy)
+        {
+            var damage = 0d;
+            if (Q.IsReady())
+                damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.Q) * 2;
+            if (W.IsReady())
+                damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.W);
+            if (E.IsReady())
+                damage += ObjectManager.Player.GetSpellDamage(enemy, SpellSlot.E);
+            if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player .SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
+                damage += ObjectManager.Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
+            return (float)damage;
         }
 
         public bool IsKillable(Obj_AI_Hero source, Obj_AI_Base target, IEnumerable<SpellSlot> spellCombo)
@@ -220,7 +253,7 @@ namespace FedAllChampionsUtility
             {
                 return;
             }
-            if (UseIgnite && IgniteKillable(ObjectManager.Player, target))
+            if (UseIgnite && (IgniteKillable(ObjectManager.Player, target) || GetComboDamage(target) > target.Health))
             {
                 if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) <= 600)
                     ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
@@ -228,15 +261,15 @@ namespace FedAllChampionsUtility
             if (Environment.TickCount - LastFlashTime < 1 && W.IsReady()) W.CastOnUnit(target, Packets());
             else
             {
-                if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.Q }) && Q.IsReady())
+                if (Q.IsKillable(target) && Q.IsReady())
                 {
                     Q.CastOnUnit(target, Packets());
                 }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.E }) && E.IsReady())
+                else if (E.IsKillable(target) && E.IsReady())
                 {
                     E.CastOnUnit(target, Packets());
                 }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.W }) && W.IsReady())
+                else if (W.IsKillable(target) && W.IsReady())
                 {
                     W.CastOnUnit(target, Packets());
                 }
@@ -246,12 +279,12 @@ namespace FedAllChampionsUtility
                 }
                 else
                 {
-                    if (Q.IsReady() && W.IsReady() && E.IsReady() && IsKillable(ObjectManager.Player, target, new[] { SpellSlot.Q, SpellSlot.W, SpellSlot.E }))
+                    if (Q.IsReady() && W.IsReady() && E.IsReady() && GetComboDamage(target) > target.Health)
                     {
                         if (Q.IsReady()) Q.CastOnUnit(target, Packets());
-                        if (R.IsReady() && UseR) CastR();
-                        if (W.IsReady()) W.CastOnUnit(target, Packets());
-                        if (E.IsReady()) E.CastOnUnit(target, Packets());
+                        else if (R.IsReady() && UseR) CastR();
+                        else if (W.IsReady()) W.CastOnUnit(target, Packets());
+                        else if (E.IsReady()) E.CastOnUnit(target, Packets());
                     }
                     else if (Math.Abs(ObjectManager.Player.PercentCooldownMod) >= 0.2)
                     {
@@ -298,32 +331,22 @@ namespace FedAllChampionsUtility
             var UseIgnite = Program.Menu.Item("UseIgnite").GetValue<bool>();
             
             if (target == null) return;
+
             if (UseIgnite && IgniteKillable(ObjectManager.Player, target))
-            {
-                if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) <= 600)
+                if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && Vector3.Distance(ObjectManager.Player.Position, target.Position) <= 600)
                     ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
-            }
+
             if (Environment.TickCount - LastFlashTime < 1 && W.IsReady()) W.CastOnUnit(target, Packets());
             else
             {
-                if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.Q }) && Q.IsReady())
-                {
-                    Q.CastOnUnit(target, Packets());
-                }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.E }) && E.IsReady())
-                {
-                    E.CastOnUnit(target, Packets());
-                }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.W }) && W.IsReady())
-                {
-                    W.CastOnUnit(target, Packets());
-                }
-                else if (ObjectManager.Player.Distance(target) >= 575 && !IsFacing(target) && W.IsReady())
-                    W.CastOnUnit(target, Packets());
+                if (Q.IsKillable(target) && Q.IsReady()) Q.CastOnUnit(target, Packets());
+                else if (E.IsKillable(target) && E.IsReady()) E.CastOnUnit(target, Packets());
+                else if (W.IsKillable(target) && W.IsReady()) W.CastOnUnit(target, Packets());
+                else if (Vector3.Distance(ObjectManager.Player.Position, target.Position) >= 575 && !target.IsFacing(ObjectManager.Player) && W.IsReady()) W.CastOnUnit(target, Packets());
                 else
                 {
                     if (Q.IsReady()) Q.CastOnUnit(target, Packets());
-                    else if (R.IsReady() && UseR) CastR();
+                    else if (R.IsReady() && UseR) R.CastOnUnit(ObjectManager.Player, Packets());
                     else if (E.IsReady()) E.CastOnUnit(target, Packets());
                     else if (W.IsReady()) W.CastOnUnit(target, Packets());
                 }
@@ -336,36 +359,26 @@ namespace FedAllChampionsUtility
             var UseIgnite = Program.Menu.Item("UseIgnite").GetValue<bool>();
             
             if (target == null) return;
-            if (UseIgnite && IgniteKillable(ObjectManager.Player, target))
-            {
-                if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) <= 600)
+
+            if (UseIgnite && IgniteKillable(ObjectManager.Player,target))
+                if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && Vector3.Distance(ObjectManager.Player.Position, target.Position) <= 600)
                     ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
-            }
+
             if (Environment.TickCount - LastFlashTime < 1 && W.IsReady()) W.CastOnUnit(target, Packets());
             else
             {
-                if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.Q }) && Q.IsReady())
-                {
-                    Q.CastOnUnit(target, Packets());
-                }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.E }) && E.IsReady())
-                {
-                    E.CastOnUnit(target, Packets());
-                }
-                else if (IsKillable(ObjectManager.Player, target, new[] { SpellSlot.W }) && W.IsReady())
-                {
-                    W.CastOnUnit(target, Packets());
-                }
-                else if (ObjectManager.Player.Distance(target) >= 575 && !IsFacing(target) && W.IsReady())
-                    W.CastOnUnit(target, Packets());
+                if (Q.IsKillable(target) && Q.IsReady()) Q.CastOnUnit(target, Packets());
+                else if (E.IsKillable(target) && E.IsReady()) E.CastOnUnit(target, Packets());
+                else if (W.IsKillable(target) && W.IsReady()) W.CastOnUnit(target, Packets());
+                else if (Vector3.Distance(ObjectManager.Player.Position, target.Position) >= 575 && !target.IsFacing(ObjectManager.Player) && W.IsReady()) W.CastOnUnit(target, Packets());
                 else
                 {
-                    if (CountEnemyInRange(target, 300) > 1)
+                    if (ObjectManager.Player.CountEnemysInRange(300) > 1)
                     {
                         if (LastCast == "Q")
                         {
                             if (Q.IsReady()) Q.CastOnUnit(target, Packets());
-                            if (R.IsReady() && UseR) CastR();
+                            if (R.IsReady() && UseR) R.CastOnUnit(ObjectManager.Player, Packets());
                             if (!R.IsReady()) W.CastOnUnit(target, Packets());
                             if (!R.IsReady() && !W.IsReady()) E.CastOnUnit(target, Packets());
                         }
@@ -378,12 +391,10 @@ namespace FedAllChampionsUtility
                             if (Q.IsReady()) Q.CastOnUnit(target, Packets());
                             if (W.IsReady()) W.CastOnUnit(target, Packets());
                             if (!W.IsReady()) E.CastOnUnit(target, Packets());
-                            if (!W.IsReady() && !E.IsReady() && R.IsReady() && UseR) CastR();
+                            if (!W.IsReady() && !E.IsReady() && R.IsReady() && UseR) R.CastOnUnit(ObjectManager.Player, Packets());
                         }
                         else
-                        {
                             if (Q.IsReady()) Q.CastOnUnit(target, Packets());
-                        }
                     }
                 }
             }
@@ -493,9 +504,9 @@ namespace FedAllChampionsUtility
             {
                 foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => ObjectManager.Player.Distance(enemy) <= Q.Range && enemy.IsEnemy && enemy.IsVisible && !enemy.IsDead))
                 {
-                    if (Q.IsReady() && IsKillable(ObjectManager.Player, enemy, new[] { SpellSlot.Q })) Q.CastOnUnit(enemy, Packets());
-                    if (W.IsReady() && IsKillable(ObjectManager.Player, enemy, new[] { SpellSlot.W })) W.CastOnUnit(enemy, Packets());
-                    if (E.IsReady() && IsKillable(ObjectManager.Player, enemy, new[] { SpellSlot.E })) E.CastOnUnit(enemy, Packets());
+                    if (Q.IsReady() && Q.IsKillable(target)) Q.CastOnUnit(enemy, Packets());
+                    if (W.IsReady() && W.IsKillable(target)) W.CastOnUnit(enemy, Packets());
+                    if (E.IsReady() && E.IsKillable(target)) E.CastOnUnit(enemy, Packets());
                 }
 
             }
