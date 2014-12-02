@@ -64,6 +64,8 @@ namespace FedAllChampionsUtility
             Program.Menu.AddSubMenu(new Menu("Passive", "Passive"));
             Program.Menu.SubMenu("Passive").AddItem(new MenuItem("useE_Interupt", "Use E Interrupt").SetValue(true));
             Program.Menu.SubMenu("Passive").AddItem(new MenuItem("AutoEGC", "Use E Gapcloser").SetValue(true));
+            Program.Menu.SubMenu("Passive").AddItem(new MenuItem("OnlyNearMouse", "Focus only targets near mouse").SetValue(false));
+            Program.Menu.SubMenu("Passive").AddItem(new MenuItem("MRadius", "Radius").SetValue(new Slider(700, 1500, 300)));
             Program.Menu.SubMenu("Passive").AddItem(new MenuItem("AutoRKS", "R Automatico").SetValue(false));
             Program.Menu.SubMenu("Passive").AddItem(new MenuItem("useR_KS", "Use R for KS").SetValue((new KeyBind("T".ToCharArray()[0], KeyBindType.Press))));
             Program.Menu.SubMenu("Passive").AddItem(new MenuItem("useR_safe", "Saferange").SetValue(new Slider(700, 2000, 0)));
@@ -180,6 +182,7 @@ namespace FedAllChampionsUtility
         {
             if (!Program.Menu.Item("useR_KS").GetValue<KeyBind>().Active && !Program.Menu.Item("AutoRKS").GetValue<bool>())
                 return;
+
             if (!R.IsReady() && !IsShooting())
                 return;
             if (Utility.CountEnemysInRange(Program.Menu.Item("useR_safe").GetValue<Slider>().Value) >= 1 && !IsShooting())
@@ -201,10 +204,9 @@ namespace FedAllChampionsUtility
             }
             if (IsShooting())
             {
-                var target = SimpleTs.GetTarget(R.Range, SimpleTs.DamageType.Magical);
-                R.Cast(target, Packets());
+                var rTarget = Program.Menu.Item("OnlyNearMouse").GetValue<bool>() ? GetTargetNearMouse(Program.Menu.Item("MRadius").GetValue<Slider>().Value) : SimpleTs.GetTarget(R.Range, SimpleTs.DamageType.Magical);
+                R.Cast(rTarget, Packets());
             }
-
         }
 
         private float GetRRange()
@@ -333,6 +335,45 @@ namespace FedAllChampionsUtility
                     Drawing.DrawLine(Drawing.Width * 0.44f - 50, Drawing.Height * 0.7f - 2, Drawing.Width * 0.44f + 350, Drawing.Height * 0.7f - 2, 25, Color.Black);
                     Drawing.DrawText(Drawing.Width * 0.44f, Drawing.Height * 0.7f, Color.OrangeRed, "Warning: [Press " + Convert.ToChar(Program.Menu.Item("useR_KS").GetValue<KeyBind>().Key) + "] to disable KS ");
                 }
+
+            if (IsShooting())
+            {
+                if (Program.Menu.Item("OnlyNearMouse").GetValue<bool>())
+                {
+                    Utility.DrawCircle(Game.CursorPos, Program.Menu.Item("MRadius").GetValue<Slider>().Value, Color.White);
+                }
+            }
+        }
+
+         private static Obj_AI_Hero GetTargetNearMouse(float distance)
+        {
+            Obj_AI_Hero bestTarget = null;
+            var bestRatio = 0f;
+
+            if (SimpleTs.SelectedTarget.IsValidTarget() && !SimpleTs.IsInvulnerable(SimpleTs.SelectedTarget) &&
+                (Game.CursorPos.Distance(SimpleTs.SelectedTarget.ServerPosition) < distance && ObjectManager.Player.Distance(SimpleTs.SelectedTarget) < R.Range))
+            {
+                return SimpleTs.SelectedTarget;
+            }
+
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (!hero.IsValidTarget(R.Range) || SimpleTs.IsInvulnerable(hero) || Game.CursorPos.Distance(hero.ServerPosition) > distance)
+                {
+                    continue;
+                }
+
+                var damage = (float)ObjectManager.Player.CalcDamage(hero, Damage.DamageType.Magical, 100);
+                var ratio = damage / (1 + hero.Health) * SimpleTs.GetPriority(hero);
+
+                if (ratio > bestRatio)
+                {
+                    bestRatio = ratio;
+                    bestTarget = hero;
+                }
+            }
+
+            return bestTarget;
         }
 
         private void Drawing_OnEndScene(EventArgs args)
