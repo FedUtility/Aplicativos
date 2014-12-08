@@ -141,7 +141,7 @@ namespace FedAllChampionsUtility
                 OnWaveClear();
 
             // Toggles
-            if (Program.Menu.SubMenu("Harass").Item("harassToggleW").GetValue<bool>() && W.IsReady())
+            if (Program.Menu.SubMenu("Harass").Item("harassToggleW").GetValue<KeyBind>().Active && W.IsReady())
             {
                 var target = SimpleTs.GetTarget(W.Range, SimpleTs.DamageType.Magical);
                 if (target != null)
